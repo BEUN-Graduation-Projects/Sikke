@@ -1,11 +1,67 @@
 from flask import Blueprint, request, jsonify, session
 from backend.database.db_setup import db
 from backend.models.user_model import User
+import jwt
+import datetime
 
 auth_bp = Blueprint('auth', __name__)
 
+# Simple JWT secret for demo
+JWT_SECRET = 'sikke-demo-secret-2024'
 
-@auth_bp.route('/register', methods=['POST'])
+
+@auth_bp.route('/auth/login', methods=['POST'])
+def login():
+    """Kullanıcı giriş endpoint'i"""
+    try:
+        data = request.get_json()
+
+        # Demo kullanıcı kontrolü
+        if data.get('email') == 'demo@sikke.com' and data.get('password') == 'demo123':
+            user_data = {
+                'id': 1,
+                'email': 'demo@sikke.com',
+                'monthly_income': 15000.0,
+                'fixed_expenses': 7500.0
+            }
+
+            # Create JWT token
+            token = jwt.encode({
+                'user_id': user_data['id'],
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)
+            }, JWT_SECRET, algorithm='HS256')
+
+            return jsonify({
+                'message': 'Giriş başarılı',
+                'token': token,
+                'user': user_data
+            }), 200
+
+        user = User.query.filter_by(email=data.get('email')).first()
+
+        if user and user.check_password(data.get('password', '')):
+            # Create user data
+            user_data = user.to_dict()
+
+            # Create JWT token
+            token = jwt.encode({
+                'user_id': user.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)
+            }, JWT_SECRET, algorithm='HS256')
+
+            return jsonify({
+                'message': 'Giriş başarılı',
+                'token': token,
+                'user': user_data
+            }), 200
+        else:
+            return jsonify({'error': 'Geçersiz email veya şifre'}), 401
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@auth_bp.route('/auth/register', methods=['POST'])
 def register():
     """Kullanıcı kayıt endpoint'i"""
     try:
@@ -29,11 +85,15 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        # Oturum aç
-        session['user_id'] = user.id
+        # Create JWT token
+        token = jwt.encode({
+            'user_id': user.id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)
+        }, JWT_SECRET, algorithm='HS256')
 
         return jsonify({
             'message': 'Kullanıcı başarıyla kaydedildi',
+            'token': token,
             'user': user.to_dict()
         }), 201
 
@@ -41,58 +101,27 @@ def register():
         return jsonify({'error': str(e)}), 500
 
 
-@auth_bp.route('/login', methods=['POST'])
-def login():
-    """Kullanıcı giriş endpoint'i"""
+@auth_bp.route('/auth/profile', methods=['GET'])
+def get_profile():
+    """Kullanıcı profilini getir"""
     try:
-        data = request.get_json()
+        token = request.headers.get('Authorization', '').replace('Bearer ', '')
 
-        user = User.query.filter_by(email=data.get('email')).first()
+        if not token:
+            return jsonify({'error': 'Token gereklidir'}), 401
 
-        if user and user.check_password(data.get('password', '')):
-            session['user_id'] = user.id
-            return jsonify({
-                'message': 'Giriş başarılı',
-                'user': user.to_dict()
-            }), 200
-        else:
-            return jsonify({'error': 'Geçersiz email veya şifre'}), 401
+        # Verify token
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        user = User.query.get(payload['user_id'])
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        if not user:
+            return jsonify({'error': 'Kullanıcı bulunamadı'}), 404
 
-
-@auth_bp.route('/logout', methods=['POST'])
-def logout():
-    """Kullanıcı çıkış endpoint'i"""
-    session.pop('user_id', None)
-    return jsonify({'message': 'Çıkış başarılı'}), 200
-
-
-@auth_bp.route('/profile', methods=['GET', 'PUT'])
-def profile():
-    """Kullanıcı profil işlemleri"""
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({'error': 'Yetkisiz erişim'}), 401
-
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({'error': 'Kullanıcı bulunamadı'}), 404
-
-    if request.method == 'GET':
         return jsonify({'user': user.to_dict()}), 200
 
-    elif request.method == 'PUT':
-        data = request.get_json()
-
-        if 'monthly_income' in data:
-            user.monthly_income = float(data['monthly_income'])
-        if 'fixed_expenses' in data:
-            user.fixed_expenses = float(data['fixed_expenses'])
-
-        db.session.commit()
-        return jsonify({
-            'message': 'Profil güncellendi',
-            'user': user.to_dict()
-        }), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({'error': 'Token süresi dolmuş'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'error': 'Geçersiz token'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

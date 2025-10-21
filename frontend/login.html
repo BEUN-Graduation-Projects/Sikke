@@ -1,10 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - Sikke</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="auth-page">
+    <div class="auth-container">
+        <!-- Logo Header -->
+        <div class="auth-header">
+            <div class="logo-large">
+                <div class="logo-icon">💰</div>
+                <h1>Sikke</h1>
+            </div>
+            <p class="auth-subtitle">Kişisel Finans Asistanına Hoş Geldiniz</p>
+        </div>
 
+        <!-- Login Form -->
+        <div class="auth-card">
+            <h2 class="auth-title">Hesabınıza Giriş Yapın</h2>
+
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">E-posta Adresi</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="ornek@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Şifre</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Şifreniz" required>
+                    <div class="form-hint">En az 6 karakter</div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        Beni hatırla
+                    </label>
+                    <a href="#forgot-password" class="forgot-link">Şifremi unuttum</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                    <span class="btn-text">Giriş Yap</span>
+                    <div class="btn-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>veya</span>
+            </div>
+
+            <div class="auth-footer">
+                <p>Hesabınız yok mu?
+                    <a href="register.html" class="auth-link">Hemen kayıt olun</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Demo Credentials -->
+        <div class="demo-credentials">
+            <div class="demo-header">
+                <i class="fas fa-vial"></i>
+                <span>Demo Giriş Bilgileri</span>
+            </div>
+            <div class="demo-content">
+                <div class="demo-item">
+                    <strong>E-posta:</strong> demo@sikke.com
+                </div>
+                <div class="demo-item">
+                    <strong>Şifre:</strong> demo123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
 </body>
 </html>
