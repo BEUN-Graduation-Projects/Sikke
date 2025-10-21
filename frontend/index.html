@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sikke - Kişisel Finans Asistanı</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-full" x-data="app()">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">💰 Sikke</h1>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">Finans Asistanı</span>
+                </div>
+
+                <div class="flex items-center space-x-4" x-show="user">
+                    <a href="#dashboard" class="nav-link" :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': currentPage === 'dashboard' }">Dashboard</a>
+                    <a href="#goals" class="nav-link" :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': currentPage === 'goals' }">Hedefler</a>
+                    <a href="#investments" class="nav-link" :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': currentPage === 'investments' }">Yatırımlar</a>
+                    <a href="#settings" class="nav-link" :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': currentPage === 'settings' }">Ayarlar</a>
+                    <button @click="toggleTheme()" class="theme-toggle">
+                        <span x-text="theme === 'dark' ? '☀️' : '🌙'"></span>
+                    </button>
+                    <button @click="logout()" class="btn-secondary">Çıkış</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Auth Section -->
+        <div id="auth-section" x-show="!user" class="fade-in">
+            <div class="max-w-md mx-auto">
+                <div class="card">
+                    <h2 class="card-title text-center">Sikke'ye Hoş Geldiniz</h2>
+
+                    <!-- Login Form -->
+                    <div x-show="!showRegister">
+                        <form @submit.prevent="login()" class="space-y-6">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" x-model="auth.email" required
+                                       class="input-field" placeholder="ornek@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Şifre</label>
+                                <input type="password" x-model="auth.password" required
+                                       class="input-field" placeholder="Şifreniz">
+                            </div>
+
+                            <button type="submit" class="btn-primary w-full" :disabled="loading">
+                                <span x-show="loading" class="loading-spinner"></span>
+                                Giriş Yap
+                            </button>
+                        </form>
+
+                        <div class="mt-6 text-center">
+                            <button @click="showRegister = true" class="text-blue-600 dark:text-blue-400">
+                                Hesabınız yok mu? Kayıt olun
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div x-show="showRegister">
+                        <form @submit.prevent="register()" class="space-y-6">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" x-model="auth.email" required
+                                       class="input-field" placeholder="ornek@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Şifre</label>
+                                <input type="password" x-model="auth.password" required
+                                       class="input-field" placeholder="En az 6 karakter">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Aylık Gelir (₺)</label>
+                                <input type="number" x-model="auth.monthly_income" required
+                                       class="input-field" placeholder="10000">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Sabit Giderler (₺)</label>
+                                <input type="number" x-model="auth.fixed_expenses" required
+                                       class="input-field" placeholder="5000">
+                            </div>
+
+                            <button type="submit" class="btn-primary w-full" :disabled="loading">
+                                <span x-show="loading" class="loading-spinner"></span>
+                                Kayıt Ol
+                            </button>
+                        </form>
+
+                        <div class="mt-6 text-center">
+                            <button @click="showRegister = false" class="text-blue-600 dark:text-blue-400">
+                                Zaten hesabınız var mı? Giriş yapın
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" x-show="user && currentPage === 'dashboard'" x-cloak class="fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Finansal Özet -->
+                <div class="col-span-2">
+                    <div class="card">
+                        <h2 class="card-title">💰 Finansal Özet</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="stat-card">
+                                <div class="stat-label">Aylık Gelir</div>
+                                <div class="stat-value" x-text="formatCurrency(overview.monthly_income)"></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Sabit Giderler</div>
+                                <div class="stat-value" x-text="formatCurrency(overview.fixed_expenses)"></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Toplam Harcama</div>
+                                <div class="stat-value" x-text="formatCurrency(overview.total_spent)"></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Günlük Bütçe</div>
+                                <div class="stat-value" x-text="formatCurrency(overview.daily_budget)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insight'lar -->
+                <div class="card">
+                    <h2 class="card-title">💡 Öneriler</h2>
+                    <div class="space-y-3" x-show="insights.length > 0">
+                        <template x-for="insight in insights" :key="insight.title">
+                            <div class="p-3 rounded-lg border-l-4"
+                                 :class="{
+                                     'border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20': insight.type === 'warning',
+                                     'border-green-400 bg-green-50 dark:bg-green-900/20': insight.type === 'success',
+                                     'border-blue-400 bg-blue-50 dark:bg-blue-900/20': insight.type === 'info'
+                                 }">
+                                <div class="text-sm font-medium" x-text="insight.title"></div>
+                                <div class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="insight.message"></div>
+                            </div>
+                        </template>
+                    </div>
+                    <div x-show="insights.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-4">
+                        🎉 Harika gidiyorsun! Tüm finansal göstergeler normal.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grafikler ve Harcamalar -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Harcama Grafiği -->
+                <div class="card">
+                    <h2 class="card-title">📊 Harcama Dağılımı</h2>
+                    <div class="chart-container">
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Son Harcamalar -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="card-title">💸 Son Harcamalar</h2>
+                        <button @click="showAddExpense = true" class="btn-primary text-sm">
+                            + Harcama Ekle
+                        </button>
+                    </div>
+
+                    <div class="space-y-3" x-show="recentExpenses.length > 0">
+                        <template x-for="expense in recentExpenses" :key="expense.id">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div>
+                                    <div class="font-medium" x-text="expense.category"></div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400"
+                                         x-text="expense.description || 'Açıklama yok'"></div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold" x-text="formatCurrency(expense.amount)"></div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400"
+                                         x-text="formatDate(expense.date)"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div x-show="recentExpenses.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-8">
+                        📝 Henüz harcama kaydı yok. İlk harcamanızı ekleyin!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Section -->
+        <div id="goals-section" x-show="user && currentPage === 'goals'" x-cloak class="fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">🎯 Hedeflerim</h1>
+                <button @click="showAddGoal = true" class="btn-primary">
+                    + Yeni Hedef
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="goal in goals" :key="goal.id">
+                    <div class="goal-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-semibold text-lg" x-text="goal.name"></h3>
+                            <span class="badge"
+                                  :class="goal.progress_percentage >= 100 ? 'badge-success' : 'badge-warning'"
+                                  x-text="goal.progress_percentage >= 100 ? 'Tamamlandı' : 'Devam Ediyor'">
+                            </span>
+                        </div>
+
+                        <div class="goal-progress">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span x-text="formatCurrency(goal.saved_amount)"></span>
+                                <span x-text="formatCurrency(goal.target_amount)"></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" :style="`width: ${Math.min(goal.progress_percentage, 100)}%`"></div>
+                            </div>
+                            <div class="text-right text-sm text-gray-500 dark:text-gray-400 mt-1"
+                                 x-text="`%${goal.progress_percentage}`">
+                            </div>
+                        </div>
+
+                        <div class="goal-meta">
+                            <span x-text="`${goal.days_remaining} gün kaldı`"></span>
+                            <span x-text="`Günlük: ${formatCurrency(calculateDailySave(goal))}`"></span>
+                        </div>
+
+                        <div class="flex space-x-2 mt-4">
+                            <button @click="addSavingsToGoal(goal.id)"
+                                    class="btn-success flex-1 text-sm"
+                                    :disabled="goal.progress_percentage >= 100">
+                                Tasarruf Ekle
+                            </button>
+                            <button @click="deleteGoal(goal.id)" class="btn-danger text-sm">
+                                Sil
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div x-show="goals.length === 0" class="text-center py-12">
+                <div class="text-gray-400 dark:text-gray-500 text-6xl mb-4">🎯</div>
+                <h3 class="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">Henüz hedefiniz yok</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">İlk hedefinizi oluşturarak tasarruf planınıza başlayın!</p>
+                <button @click="showAddGoal = true" class="btn-primary">İlk Hedefi Oluştur</button>
+            </div>
+        </div>
+
+        <!-- Investments Section -->
+        <div id="investments-section" x-show="user && currentPage === 'investments'" x-cloak class="fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">📈 Yatırımlar</h1>
+                <div class="flex space-x-3">
+                    <button @click="loadRecommendations()" class="btn-secondary">
+                        💡 Önerileri Getir
+                    </button>
+                </div>
+            </div>
+
+            <!-- Yatırım Özeti -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Yatırım</div>
+                    <div class="stat-value" x-text="formatCurrency(investmentSummary.total_invested)"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Güncel Değer</div>
+                    <div class="stat-value" x-text="formatCurrency(investmentSummary.total_current_value)"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Kar/Zarar</div>
+                    <div class="stat-value"
+                         :class="investmentSummary.total_profit >= 0 ? 'text-green-600' : 'text-red-600'"
+                         x-text="formatCurrency(investmentSummary.total_profit)">
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Getiri Oranı</div>
+                    <div class="stat-value"
+                         :class="investmentSummary.profit_percentage >= 0 ? 'text-green-600' : 'text-red-600'"
+                         x-text="`%${investmentSummary.profit_percentage}`">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yatırım Önerileri -->
+            <div x-show="showRecommendations" class="card mb-8">
+                <h2 class="card-title">🚀 Yatırım Önerileri</h2>
+                <div class="form-hint mb-4">
+                    Kullanılabilir bütçe: <span x-text="formatCurrency(recommendations.available_amount)"></span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <template x-for="rec in recommendations.list" :key="rec.symbol">
+                        <div class="investment-card">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="font-semibold" x-text="rec.name"></h3>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400" x-text="rec.symbol"></div>
+                                </div>
+                                <span class="investment-performance"
+                                      :class="rec.performance >= 0 ? 'performance-positive' : 'performance-negative'"
+                                      x-text="`%${rec.performance}`">
+                                </span>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>Önerilen:</span>
+                                    <span class="font-medium" x-text="formatCurrency(rec.recommended_amount)"></span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Risk Skoru:</span>
+                                    <span class="font-medium" x-text="rec.score"></span>
+                                </div>
+                            </div>
+
+                            <button @click="simulateInvestment(rec.symbol, rec.recommended_amount)"
+                                    class="btn-primary w-full mt-4 text-sm">
+                                Simüle Et
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Yatırım Geçmişi -->
+            <div class="card">
+                <h2 class="card-title">📋 Yatırım Geçmişi</h2>
+                <div class="overflow-x-auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Araç</th>
+                                <th>Miktar</th>
+                                <th>Birim Fiyat</th>
+                                <th>Adet</th>
+                                <th>Güncel Değer</th>
+                                <th>Kar/Zarar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="investment in investments" :key="investment.id">
+                                <tr>
+                                    <td>
+                                        <div class="font-medium" x-text="investment.asset_name"></div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400" x-text="investment.asset_symbol"></div>
+                                    </td>
+                                    <td x-text="formatCurrency(investment.amount)"></td>
+                                    <td x-text="formatCurrency(investment.simulated_price)"></td>
+                                    <td x-text="investment.units"></td>
+                                    <td x-text="formatCurrency(investment.current_value)"></td>
+                                    <td>
+                                        <span :class="investment.current_value - investment.amount >= 0 ? 'text-green-600' : 'text-red-600'"
+                                              x-text="formatCurrency(investment.current_value - investment.amount)">
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div x-show="investments.length === 0" class="text-center py-8">
+                    <div class="text-gray-400 dark:text-gray-500 text-6xl mb-4">📈</div>
+                    <h3 class="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">Henüz yatırım yapılmadı</h3>
+                    <p class="text-gray-500 dark:text-gray-400">Yatırım önerilerini görüntüleyerek başlayın!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" x-show="user && currentPage === 'settings'" x-cloak class="fade-in">
+            <div class="max-w-2xl mx-auto">
+                <h1 class="text-2xl font-bold mb-6">⚙️ Ayarlar</h1>
+
+                <div class="card mb-6">
+                    <h2 class="card-title">👤 Profil Bilgileri</h2>
+                    <form @submit.prevent="updateProfile()" class="space-y-6">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" x-model="user.email" disabled class="input-field">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Aylık Gelir (₺)</label>
+                            <input type="number" x-model="user.monthly_income" required class="input-field">
+                            <div class="form-hint">Net aylık gelirinizi giriniz</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Sabit Giderler (₺)</label>
+                            <input type="number" x-model="user.fixed_expenses" required class="input-field">
+                            <div class="form-hint">Kira, faturalar, abonelikler vb.</div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Profili Güncelle</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">🎨 Tema Ayarları</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span>Koyu Tema</span>
+                            <button @click="toggleTheme()" class="theme-toggle text-lg">
+                                <span x-text="theme === 'dark' ? '☀️' : '🌙'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Add Expense Modal -->
+    <div x-show="showAddExpense" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="card-title mb-4">💸 Yeni Harcama</h2>
+            <form @submit.prevent="addExpense()" class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Miktar (₺)</label>
+                    <input type="number" x-model="newExpense.amount" required class="input-field" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Kategori</label>
+                    <select x-model="newExpense.category" required class="input-field">
+                        <option value="">Kategori seçin</option>
+                        <option value="Yemek">🍽️ Yemek</option>
+                        <option value="Ulaşım">🚗 Ulaşım</option>
+                        <option value="Alışveriş">🛍️ Alışveriş</option>
+                        <option value="Eğlence">🎉 Eğlence</option>
+                        <option valueSağlık">🏥 Sağlık</option>
+                        <option value="Fatura">💡 Fatura</option>
+                        <option value="Diğer">📦 Diğer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Açıklama</label>
+                    <input type="text" x-model="newExpense.description" class="input-field" placeholder="Harcama detayı">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tarih</label>
+                    <input type="date" x-model="newExpense.date" required class="input-field">
+                </div>
+
+                <div class="flex space-x-3">
+                    <button type="button" @click="showAddExpense = false" class="btn-secondary flex-1">İptal</button>
+                    <button type="submit" class="btn-primary flex-1">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div x-show="showAddGoal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="card-title mb-4">🎯 Yeni Hedef</h2>
+            <form @submit.prevent="addGoal()" class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Hedef Adı</label>
+                    <input type="text" x-model="newGoal.name" required class="input-field" placeholder="Örn: Yeni laptop">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Hedef Tutarı (₺)</label>
+                    <input type="number" x-model="newGoal.target_amount" required class="input-field" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Şu ana kadar biriken</label>
+                    <input type="number" x-model="newGoal.saved_amount" class="input-field" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Son Tarih</label>
+                    <input type="date" x-model="newGoal.deadline" required class="input-field">
+                </div>
+
+                <div class="flex space-x-3">
+                    <button type="button" @click="showAddGoal = false" class="btn-secondary flex-1">İptal</button>
+                    <button type="submit" class="btn-primary flex-1">Oluştur</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Savings Modal -->
+    <div x-show="showAddSavings" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="card-title mb-4">💰 Tasarruf Ekle</h2>
+            <form @submit.prevent="confirmAddSavings()" class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Miktar (₺)</label>
+                    <input type="number" x-model="savingsAmount" required class="input-field" step="0.01" min="0">
+                </div>
+
+                <div class="flex space-x-3">
+                    <button type="button" @click="showAddSavings = false" class="btn-secondary flex-1">İptal</button>
+                    <button type="submit" class="btn-primary flex-1">Ekle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div x-show="toast.show" x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-x-full"
+         x-transition:enter-end="opacity-100 transform translate-x-0"
+         class="toast" :class="{
+             'border-green-200 bg-green-50 dark:bg-green-900/20': toast.type === 'success',
+             'border-red-200 bg-red-50 dark:bg-red-900/20': toast.type === 'error',
+             'border-blue-200 bg-blue-50 dark:bg-blue-900/20': toast.type === 'info'
+         }">
+        <div class="font-medium" x-text="toast.message"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
