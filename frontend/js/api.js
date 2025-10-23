@@ -1,151 +1,123 @@
-class ApiService {
-    constructor() {
-        this.baseURL = '/api';
-    }
+// API-specific functions for Sikke app
 
-    async request(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
-        };
-
-        // Token'ı localStorage'dan al
-        const token = localStorage.getItem('sikke_token');
-        if (token && !token.startsWith('demo-token-')) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        try {
-            const response = await fetch(url, config);
-
-            if (response.status === 401) {
-                this.handleUnauthorized();
-                throw new Error('Oturum süresi doldu');
-            }
-
-            // Backend henüz hazır değilse demo data dön
-            if (!response.ok && response.status !== 404) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            try {
-                const data = await response.json();
-                return data;
-            } catch (e) {
-                // JSON parse hatası - backend henüz hazır değil
-                return this.getMockData(endpoint, options);
-            }
-
-        } catch (error) {
-            console.error('API request failed, using mock data:', error);
-            // Backend down ise mock data dön
-            return this.getMockData(endpoint, options);
-        }
-    }
-
-    getMockData(endpoint, options) {
-        // Mock data for development
-        const mockData = {
-            '/auth/login': {
-                token: 'mock-token-' + Date.now(),
-                user: {
-                    id: 1,
-                    email: 'demo@sikke.com',
-                    monthly_income: 15000,
-                    fixed_expenses: 7500,
-                    created_at: new Date().toISOString()
-                }
-            },
-            '/auth/register': {
-                token: 'mock-token-' + Date.now(),
-                user: {
-                    id: Date.now(),
-                    email: options.body ? JSON.parse(options.body).email : 'user@example.com',
-                    monthly_income: 10000,
-                    fixed_expenses: 5000,
-                    created_at: new Date().toISOString()
-                }
-            },
-            '/dashboard/overview': {
-                daily_budget: 250.00,
-                monthly_income: 15000,
-                fixed_expenses: 7500,
-                total_spent: 5250,
-                savings_rate: 15,
-                investment_growth: 5.2,
-                category_spending: {
-                    'Yemek': 1500,
-                    'Ulaşım': 750,
-                    'Alışveriş': 2000,
-                    'Fatura': 1000
-                }
-            },
-            '/expenses': {
-                expenses: [
-                    { id: 1, amount: 150, category: 'Yemek', description: 'Öğle yemeği', date: new Date().toISOString() },
-                    { id: 2, amount: 45, category: 'Ulaşım', description: 'Taksi', date: new Date(Date.now() - 86400000).toISOString() },
-                    { id: 3, amount: 200, category: 'Alışveriş', description: 'Market', date: new Date(Date.now() - 172800000).toISOString() }
-                ]
-            },
-            '/goals': {
-                goals: [
-                    { id: 1, name: 'Yeni Laptop', target_amount: 15000, saved_amount: 5200, progress_percentage: 34.67, deadline: new Date(Date.now() + 90 * 86400000).toISOString() },
-                    { id: 2, name: 'Tatil', target_amount: 8000, saved_amount: 3200, progress_percentage: 40, deadline: new Date(Date.now() + 120 * 86400000).toISOString() }
-                ]
-            }
-        };
-
-        return mockData[endpoint] || { message: 'Mock data not available' };
-    }
-
-    handleUnauthorized() {
-        localStorage.removeItem('sikke_token');
-        localStorage.removeItem('sikke_user');
-        window.location.href = 'login.html';
-    }
-
+class SikkeAPI {
     // Auth endpoints
-    async login(email, password) {
-        return this.request('/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, password })
-        });
+    static async login(email, password) {
+        return ApiService.post('/auth/login', { email, password });
     }
 
-    async register(userData) {
-        return this.request('/auth/register', {
-            method: 'POST',
-            body: JSON.stringify(userData)
-        });
+    static async register(userData) {
+        return ApiService.post('/auth/register', userData);
+    }
+
+    static async logout() {
+        return ApiService.post('/auth/logout');
+    }
+
+    // Expense endpoints
+    static async getExpenses() {
+        return ApiService.get('/expenses');
+    }
+
+    static async addExpense(expenseData) {
+        return ApiService.post('/expenses', expenseData);
+    }
+
+    static async updateExpense(id, expenseData) {
+        return ApiService.put(`/expenses/${id}`, expenseData);
+    }
+
+    static async deleteExpense(id) {
+        return ApiService.delete(`/expenses/${id}`);
+    }
+
+    // Budget endpoints
+    static async getBudget() {
+        return ApiService.get('/budget');
+    }
+
+    static async updateBudget(budgetData) {
+        return ApiService.put('/budget', budgetData);
+    }
+
+    static async getDailyLimit() {
+        return ApiService.get('/budget/daily-limit');
+    }
+
+    // Goals endpoints
+    static async getGoals() {
+        return ApiService.get('/goals');
+    }
+
+    static async addGoal(goalData) {
+        return ApiService.post('/goals', goalData);
+    }
+
+    static async updateGoal(id, goalData) {
+        return ApiService.put(`/goals/${id}`, goalData);
+    }
+
+    static async deleteGoal(id) {
+        return ApiService.delete(`/goals/${id}`);
+    }
+
+    // Investments endpoints
+    static async getInvestments() {
+        return ApiService.get('/investments');
+    }
+
+    static async getInvestmentSuggestions() {
+        return ApiService.get('/investments/suggestions');
+    }
+
+    static async addInvestment(investmentData) {
+        return ApiService.post('/investments', investmentData);
     }
 
     // Dashboard endpoints
-    async getDashboardOverview() {
-        return this.request('/dashboard/overview');
+    static async getDashboardData() {
+        return ApiService.get('/dashboard');
     }
 
-    async getDashboardInsights() {
-        return this.request('/dashboard/insights');
+    static async getMonthlyReport(month, year) {
+        return ApiService.get(`/reports/monthly?month=${month}&year=${year}`);
     }
 
-    // Expenses endpoints
-    async getExpenses(params = {}) {
-        const query = new URLSearchParams(params).toString();
-        return this.request(`/expenses?${query}`);
+    // User settings
+    static async updateProfile(userData) {
+        return ApiService.put('/user/profile', userData);
     }
 
-    async addExpense(expenseData) {
-        return this.request('/expenses', {
-            method: 'POST',
-            body: JSON.stringify(expenseData)
-        });
+    static async changePassword(passwordData) {
+        return ApiService.put('/user/password', passwordData);
     }
 }
 
-// Create global API instance
-window.apiService = new ApiService();
+// Error handling
+class APIErrorHandler {
+    static handle(error) {
+        console.error('API Error:', error);
+
+        let userMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+
+        if (error.message.includes('Network')) {
+            userMessage = 'İnternet bağlantınızı kontrol edin.';
+        } else if (error.message.includes('401')) {
+            userMessage = 'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.';
+            SikkeApp.logout();
+        } else if (error.message.includes('404')) {
+            userMessage = 'İstenen kaynak bulunamadı.';
+        } else if (error.message.includes('500')) {
+            userMessage = 'Sunucu hatası. Lütfen daha sonra tekrar deneyin.';
+        } else {
+            userMessage = error.message || userMessage;
+        }
+
+        Utils.showNotification(userMessage, 'error');
+        return userMessage;
+    }
+}
+
+// Make API globally available
+window.SikkeAPI = SikkeAPI;
+window.APIErrorHandler = APIErrorHandler;

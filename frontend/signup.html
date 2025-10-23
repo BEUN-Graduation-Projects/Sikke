@@ -1,10 +1,369 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesap Oluştur - Sikke</title>
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="dark-theme">
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="gradient-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+    </div>
 
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
+                    </a>
+                </div>
+                <div class="auth-buttons">
+                    <a href="index.html" class="btn btn-ghost">
+                        <i class="fas fa-arrow-left"></i>
+                        Ana Sayfa
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Auth Content -->
+        <main class="auth-layout">
+            <!-- Left Side - Visual -->
+            <div class="auth-visual">
+                <div class="visual-content">
+                    <div class="floating-card card-1">
+                        <div class="card-header">
+                            <div class="card-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="budget-display">
+                                <div class="budget-title">Günlük Limit</div>
+                                <div class="budget-amount">₺147.50</div>
+                                <div class="budget-progress">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                                <div class="budget-info">
+                                    <span>Kalan: ₺51.63</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="floating-card card-2">
+                        <div class="achievement-badge">
+                            <div class="badge-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="badge-text">
+                                <span>Finans Ustası</span>
+                                <small>Seviye 2</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="floating-card card-3">
+                        <div class="investment-preview">
+                            <div class="investment-item">
+                                <div class="crypto-icon">
+                                    <i class="fab fa-bitcoin"></i>
+                                </div>
+                                <div class="investment-info">
+                                    <span>BTC</span>
+                                    <small>+5.2%</small>
+                                </div>
+                            </div>
+                            <div class="investment-item">
+                                <div class="crypto-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="investment-info">
+                                    <span>BIST</span>
+                                    <small>+2.1%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="main-visual">
+                        <div class="visual-icon success">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h2>Finansal Başarıya İlk Adım</h2>
+                        <p>Binlerce kullanıcı Sikke ile finansal hedeflerine ulaştı</p>
+                        <div class="success-stats">
+                            <div class="stat">
+                                <span class="number">+42%</span>
+                                <span class="label">Tasarruf Oranı</span>
+                            </div>
+                            <div class="stat">
+                                <span class="number">₺2.4M</span>
+                                <span class="label">Toplam Tasarruf</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Form -->
+            <div class="auth-form-side">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h1>Hesap Oluşturun</h1>
+                        <p>Finansal özgürlüğünüz için ilk adımı atın</p>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="signup-steps">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <span>Kişisel Bilgiler</span>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <span>Finansal Hedefler</span>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <span>Tercihler</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Signup -->
+                    <div class="social-login">
+                        <button class="social-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Google ile kaydol</span>
+                        </button>
+                        <button class="social-btn microsoft">
+                            <i class="fab fa-microsoft"></i>
+                            <span>Microsoft ile kaydol</span>
+                        </button>
+                        <button class="social-btn apple">
+                            <i class="fab fa-apple"></i>
+                            <span>Apple ile kaydol</span>
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>veya e-posta ile kaydolun</span>
+                    </div>
+
+                    <!-- Signup Form -->
+                    <form id="signupForm" class="auth-form">
+                        <!-- Step 1: Personal Info -->
+                        <div class="form-step active" data-step="1">
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <input type="text" id="fullName" class="form-input" placeholder="Adınız ve soyadınız" required>
+                                <div class="input-actions">
+                                    <i class="fas fa-check-circle valid-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <input type="email" id="email" class="form-input" placeholder="E-posta adresiniz" required>
+                                <div class="input-actions">
+                                    <i class="fas fa-check-circle valid-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <input type="password" id="password" class="form-input" placeholder="Şifreniz (en az 8 karakter)" required>
+                                <div class="input-actions">
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="password-strength">
+                                <div class="strength-bars">
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                </div>
+                                <div class="strength-text">Şifre gücü: <span>zayıf</span></div>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <input type="password" id="confirmPassword" class="form-input" placeholder="Şifrenizi tekrar girin" required>
+                                <div class="input-actions">
+                                    <i class="fas fa-check-circle valid-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Financial Goals -->
+                        <div class="form-step" data-step="2">
+                            <div class="goal-selection">
+                                <h3>Ana Finansal Hedefiniz Nedir?</h3>
+                                <div class="goal-options">
+                                    <label class="goal-option">
+                                        <input type="radio" name="goal" value="savings">
+                                        <div class="goal-card">
+                                            <i class="fas fa-piggy-bank"></i>
+                                            <span>Tasarruf Artırma</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-option">
+                                        <input type="radio" name="goal" value="investment">
+                                        <div class="goal-card">
+                                            <i class="fas fa-chart-line"></i>
+                                            <span>Yatırım Öğrenme</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-option">
+                                        <input type="radio" name="goal" value="budget">
+                                        <div class="goal-card">
+                                            <i class="fas fa-wallet"></i>
+                                            <span>Bütçe Kontrolü</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-option">
+                                        <input type="radio" name="goal" value="debt">
+                                        <div class="goal-card">
+                                            <i class="fas fa-credit-card"></i>
+                                            <span>Borç Yönetimi</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Preferences -->
+                        <div class="form-step" data-step="3">
+                            <div class="preference-selection">
+                                <h3>Tercihlerinizi Belirleyin</h3>
+
+                                <div class="preference-group">
+                                    <label class="checkbox-wrapper large">
+                                        <input type="checkbox" id="newsletter">
+                                        <span class="checkmark"></span>
+                                        <div class="checkbox-content">
+                                            <span class="checkbox-label">Finans ipuçları ve güncellemeleri e-posta ile almak istiyorum</span>
+                                            <small>Haftalık bülten ve kişiselleştirilmiş öneriler</small>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="preference-group">
+                                    <label class="checkbox-wrapper large">
+                                        <input type="checkbox" id="analytics" checked>
+                                        <span class="checkmark"></span>
+                                        <div class="checkbox-content">
+                                            <span class="checkbox-label">Anonim kullanım verileri paylaşımına izin veriyorum</span>
+                                            <small>Ürün geliştirme için anonim veriler kullanılacaktır</small>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="terms-agreement">
+                                    <label class="checkbox-wrapper">
+                                        <input type="checkbox" id="terms" required>
+                                        <span class="checkmark"></span>
+                                        <span class="checkbox-label">
+                                            <a href="#" class="terms-link">Kullanım koşullarını</a> ve
+                                            <a href="#" class="terms-link">gizlilik politikasını</a> okudum ve kabul ediyorum
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Navigation -->
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-outline btn-prev" style="display: none;">
+                                <i class="fas fa-arrow-left"></i>
+                                Geri
+                            </button>
+                            <button type="button" class="btn btn-primary btn-next">
+                                Devam Et
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-submit" style="display: none;">
+                                <span class="btn-content">
+                                    <span id="signupText">Hesabı Oluştur</span>
+                                    <div class="btn-loader" id="signupLoader">
+                                        <div class="loader-dots">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </span>
+                                <i class="fas fa-rocket"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>Zaten hesabınız var mı?
+                            <a href="login.html" class="auth-link">
+                                <span>Giriş yapın</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Bankalar ile aynı güvenlik standartları</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="page-transition">
+        <div class="transition-loader">
+            <div class="transition-logo">
+                <span>₺</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

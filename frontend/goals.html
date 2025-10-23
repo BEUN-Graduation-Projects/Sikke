@@ -1,10 +1,402 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedefler - Sikke</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/goals.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="dark-theme goals-page">
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="gradient-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+        </div>
+    </div>
 
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
+                    </a>
+                </div>
+
+                <nav class="nav-menu">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="goals.html" class="nav-link active">
+                        <i class="fas fa-bullseye"></i>
+                        Hedefler
+                    </a>
+                    <a href="investments.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Yatırım
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Ayarlar
+                    </a>
+                </nav>
+
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı" id="userAvatar">
+                        <div class="user-status"></div>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Kullanıcı</span>
+                        <span class="user-email" id="userEmail">user@example.com</span>
+                    </div>
+                    <div class="dropdown-menu">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="settings.html"><i class="fas fa-user"></i>Profil</a>
+                            <a href="#"><i class="fas fa-bell"></i>Bildirimler</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" onclick="SikkeApp.logout()"><i class="fas fa-sign-out-alt"></i>Çıkış Yap</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="header-content">
+                        <h1>Hedeflerim</h1>
+                        <p>Finansal hedeflerinizi takip edin ve motive olun</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">Tümü</button>
+                            <button class="filter-btn" data-filter="active">Aktif</button>
+                            <button class="filter-btn" data-filter="completed">Tamamlanan</button>
+                        </div>
+                        <button class="btn btn-primary" id="addGoalBtn">
+                            <i class="fas fa-plus"></i>
+                            Yeni Hedef
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Goals Summary -->
+                <div class="goals-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="totalGoals">5</div>
+                            <div class="summary-label">Toplam Hedef</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="completedGoals">2</div>
+                            <div class="summary-label">Tamamlanan</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="activeGoals">3</div>
+                            <div class="summary-label">Aktif</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="totalSaved">₺46,650</div>
+                            <div class="summary-label">Toplam Birikim</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goals Grid -->
+                <div class="goals-grid" id="goalsGrid">
+                    <!-- Goal cards will be dynamically loaded here -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Henüz hedefiniz yok</h3>
+                    <p>İlk hedefinizi oluşturarak finansal planlamaya başlayın</p>
+                    <button class="btn btn-primary" id="createFirstGoal">
+                        <i class="fas fa-plus"></i>
+                        İlk Hedefi Oluştur
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="dashboard.html" class="mobile-nav-link">
+                <i class="fas fa-chart-pie"></i>
+                Dashboard
+            </a>
+            <a href="goals.html" class="mobile-nav-link active">
+                <i class="fas fa-bullseye"></i>
+                Hedefler
+            </a>
+            <a href="investments.html" class="mobile-nav-link">
+                <i class="fas fa-chart-line"></i>
+                Yatırım
+            </a>
+            <a href="settings.html" class="mobile-nav-link">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+            <div class="mobile-user-section">
+                <div class="mobile-user-info">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı">
+                    </div>
+                    <div>
+                        <div class="user-name" id="mobileUserName">Kullanıcı</div>
+                        <div class="user-email" id="mobileUserEmail">user@example.com</div>
+                    </div>
+                </div>
+                <a href="#" onclick="SikkeApp.logout()" class="btn btn-outline btn-full">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="goalModalTitle">Yeni Hedef Ekle</h3>
+                <button class="modal-close" id="closeGoalModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="goalForm">
+                    <div class="form-group">
+                        <label class="form-label">Hedef Adı</label>
+                        <input type="text" id="goalTitle" class="form-input" placeholder="Örn: Yeni Laptop, Tatil, Araba..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hedef Tutarı</label>
+                        <input type="number" id="goalAmount" class="form-input" placeholder="₺0.00" step="0.01" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Şu ana kadar biriktirilen</label>
+                        <input type="number" id="goalSaved" class="form-input" placeholder="₺0.00" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hedef Tarihi</label>
+                        <input type="date" id="goalDeadline" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Kategori</label>
+                        <select id="goalCategory" class="form-input" required>
+                            <option value="">Kategori seçin</option>
+                            <option value="technology">Teknoloji</option>
+                            <option value="travel">Seyahat</option>
+                            <option value="vehicle">Araç</option>
+                            <option value="home">Ev</option>
+                            <option value="education">Eğitim</option>
+                            <option value="health">Sağlık</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Açıklama (opsiyonel)</label>
+                        <textarea id="goalDescription" class="form-input" rows="3" placeholder="Hedefiniz hakkında notlar..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelGoal">İptal</button>
+                        <button type="submit" class="btn btn-primary" id="saveGoalBtn">
+                            <span>Hedefi Kaydet</span>
+                            <div class="btn-loader" style="display: none;">
+                                <div class="loader-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Detail Modal -->
+    <div class="modal" id="goalDetailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="detailGoalTitle">Hedef Detayı</h3>
+                <button class="modal-close" id="closeDetailModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="goal-detail-content">
+                    <div class="detail-header">
+                        <div class="goal-progress-large">
+                            <div class="progress-circle-large">
+                                <div class="circle-bg"></div>
+                                <div class="circle-progress" id="detailProgressCircle"></div>
+                                <div class="circle-text">
+                                    <span id="detailProgressPercent">0%</span>
+                                    <small>Tamamlandı</small>
+                                </div>
+                            </div>
+                            <div class="goal-amounts">
+                                <div class="amount-item">
+                                    <span class="label">Hedef</span>
+                                    <span class="value" id="detailTargetAmount">₺0</span>
+                                </div>
+                                <div class="amount-item">
+                                    <span class="label">Biriktirilen</span>
+                                    <span class="value" id="detailSavedAmount">₺0</span>
+                                </div>
+                                <div class="amount-item">
+                                    <span class="label">Kalan</span>
+                                    <span class="value" id="detailRemainingAmount">₺0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-info">
+                        <div class="info-item">
+                            <label>Kategori:</label>
+                            <span id="detailCategory">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Hedef Tarihi:</label>
+                            <span id="detailDeadline">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Kalan Gün:</label>
+                            <span id="detailDaysLeft">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Günlük Tasarruf:</label>
+                            <span id="detailDailySave">-</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-description">
+                        <label>Açıklama:</label>
+                        <p id="detailDescription">Açıklama bulunmuyor.</p>
+                    </div>
+
+                    <div class="detail-actions">
+                        <button class="btn btn-outline" id="editGoalBtn">
+                            <i class="fas fa-edit"></i>
+                            Düzenle
+                        </button>
+                        <button class="btn btn-primary" id="addSavingsBtn">
+                            <i class="fas fa-plus"></i>
+                            Birikim Ekle
+                        </button>
+                        <button class="btn btn-danger" id="deleteGoalBtn">
+                            <i class="fas fa-trash"></i>
+                            Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Savings Modal -->
+    <div class="modal" id="savingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Birikim Ekle</h3>
+                <button class="modal-close" id="closeSavingsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="savingsForm">
+                    <div class="form-group">
+                        <label class="form-label">Tutar</label>
+                        <input type="number" id="savingsAmount" class="form-input" placeholder="₺0.00" step="0.01" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tarih</label>
+                        <input type="date" id="savingsDate" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Açıklama (opsiyonel)</label>
+                        <input type="text" id="savingsDescription" class="form-input" placeholder="Birikim açıklaması...">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelSavings">İptal</button>
+                        <button type="submit" class="btn btn-primary">Birikim Ekle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/goals.js"></script>
 </body>
 </html>

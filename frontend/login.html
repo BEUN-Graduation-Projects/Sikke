@@ -4,90 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş Yap - Sikke</title>
+    <link rel="stylesheet" href="css/auth.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="auth-page">
-    <div class="auth-container">
-        <!-- Logo Header -->
-        <div class="auth-header">
-            <div class="logo-large">
-                <div class="logo-icon">💰</div>
-                <h1>Sikke</h1>
-            </div>
-            <p class="auth-subtitle">Kişisel Finans Asistanına Hoş Geldiniz</p>
+<body class="dark-theme">
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
         </div>
+        <div class="gradient-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+    </div>
 
-        <!-- Login Form -->
-        <div class="auth-card">
-            <h2 class="auth-title">Hesabınıza Giriş Yapın</h2>
-
-            <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label for="email" class="form-label">E-posta Adresi</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="ornek@email.com" required>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
+                    </a>
                 </div>
-
-                <div class="form-group">
-                    <label for="password" class="form-label">Şifre</label>
-                    <input type="password" id="password" name="password" class="form-input" placeholder="Şifreniz" required>
-                    <div class="form-hint">En az 6 karakter</div>
+                <div class="auth-buttons">
+                    <a href="index.html" class="btn btn-ghost">
+                        <i class="fas fa-arrow-left"></i>
+                        Ana Sayfa
+                    </a>
                 </div>
+            </div>
+        </header>
 
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="rememberMe">
-                        <span class="checkmark"></span>
-                        Beni hatırla
-                    </label>
-                    <a href="#forgot-password" class="forgot-link">Şifremi unuttum</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
-                    <span class="btn-text">Giriş Yap</span>
-                    <div class="btn-loading" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i>
+        <!-- Main Auth Content -->
+        <main class="auth-layout">
+            <!-- Left Side - Visual -->
+            <div class="auth-visual">
+                <div class="visual-content">
+                    <div class="floating-card card-1">
+                        <div class="card-header">
+                            <div class="card-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="mini-chart">
+                                <div class="chart-line"></div>
+                                <div class="chart-point" style="left: 20%"></div>
+                                <div class="chart-point" style="left: 50%"></div>
+                                <div class="chart-point" style="left: 80%"></div>
+                            </div>
+                            <div class="card-stats">
+                                <span>+12.5%</span>
+                                <i class="fas fa-chart-line success"></i>
+                            </div>
+                        </div>
                     </div>
-                </button>
-            </form>
 
-            <div class="auth-divider">
-                <span>veya</span>
-            </div>
+                    <div class="floating-card card-2">
+                        <div class="progress-circle">
+                            <div class="circle-bg"></div>
+                            <div class="circle-progress" style="--progress: 65%"></div>
+                            <div class="circle-text">65%</div>
+                        </div>
+                        <div class="card-label">Hedef İlerleme</div>
+                    </div>
 
-            <div class="auth-footer">
-                <p>Hesabınız yok mu?
-                    <a href="register.html" class="auth-link">Hemen kayıt olun</a>
-                </p>
-            </div>
-        </div>
+                    <div class="floating-card card-3">
+                        <div class="spending-categories">
+                            <div class="category">
+                                <div class="category-color" style="background: #f0b90b"></div>
+                                <span>Yemek</span>
+                                <span>₺245</span>
+                            </div>
+                            <div class="category">
+                                <div class="category-color" style="background: #10b981"></div>
+                                <span>Ulaşım</span>
+                                <span>₺120</span>
+                            </div>
+                            <div class="category">
+                                <div class="category-color" style="background: #3b82f6"></div>
+                                <span>Eğlence</span>
+                                <span>₺85</span>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Demo Credentials -->
-        <div class="demo-credentials">
-            <div class="demo-header">
-                <i class="fas fa-vial"></i>
-                <span>Demo Giriş Bilgileri</span>
-            </div>
-            <div class="demo-content">
-                <div class="demo-item">
-                    <strong>E-posta:</strong> demo@sikke.com
+                    <div class="main-visual">
+                        <div class="visual-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h2>Güvenli Giriş</h2>
+                        <p>Finansal verileriniz 256-bit SSL şifreleme ile korunmaktadır</p>
+                    </div>
                 </div>
-                <div class="demo-item">
-                    <strong>Şifre:</strong> demo123
+            </div>
+
+            <!-- Right Side - Form -->
+            <div class="auth-form-side">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h1>Hesabınıza Giriş Yapın</h1>
+                        <p>Sikke'nin güçlü özelliklerine erişmek için giriş yapın</p>
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="social-login">
+                        <button class="social-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Google ile devam et</span>
+                        </button>
+                        <button class="social-btn microsoft">
+                            <i class="fab fa-microsoft"></i>
+                            <span>Microsoft ile devam et</span>
+                        </button>
+                        <button class="social-btn apple">
+                            <i class="fab fa-apple"></i>
+                            <span>Apple ile devam et</span>
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>veya e-posta ile giriş yapın</span>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" class="auth-form">
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <input type="email" id="email" class="form-input" placeholder="E-posta adresiniz" required>
+                            <div class="input-actions">
+                                <i class="fas fa-check-circle valid-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <input type="password" id="password" class="form-input" placeholder="Şifreniz" required>
+                            <div class="input-actions">
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-wrapper">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                <span class="checkbox-label">Beni hatırla</span>
+                            </label>
+                            <a href="#" class="forgot-link">Şifremi unuttum?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large btn-full">
+                            <span class="btn-content">
+                                <span id="loginText">Giriş Yap</span>
+                                <div class="btn-loader" id="loginLoader">
+                                    <div class="loader-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </span>
+                            <i class="fas fa-arrow-right btn-arrow"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>Hesabınız yok mu?
+                            <a href="signup.html" class="auth-link">
+                                <span>Hesap oluşturun</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>256-bit SSL Şifreleme</span>
+                    </div>
                 </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="page-transition">
+        <div class="transition-loader">
+            <div class="transition-logo">
+                <span>₺</span>
             </div>
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="toast hidden">
-        <div class="toast-content">
-            <i class="toast-icon"></i>
-            <span class="toast-message"></span>
-        </div>
-    </div>
-
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
 </body>
 </html>

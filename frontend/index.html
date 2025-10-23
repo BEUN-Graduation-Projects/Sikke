@@ -5,168 +5,294 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sikke - Kişisel Finans Asistanı</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="dark-theme">
+    <!-- Ana Container -->
     <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">Sikke</div>
-            </div>
 
-            <div class="sidebar-content">
-                <!-- User Profile -->
-                <div class="nav-section">
-                    <div class="user-profile">
-                        <div class="nav-item active">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </div>
+        <!-- Header / Navigation -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
                     </div>
+                    <p class="logo-subtitle">Kişisel Finans Asistanı</p>
                 </div>
 
-                <!-- Main Navigation -->
-                <div class="nav-section">
-                    <h3>Finans</h3>
-                    <a href="#expenses" class="nav-item">
-                        <i class="fas fa-wallet"></i>
-                        <span>Harcamalar</span>
-                    </a>
-                    <a href="#goals" class="nav-item">
-                        <i class="fas fa-bullseye"></i>
-                        <span>Hedefler</span>
-                    </a>
-                    <a href="#investments" class="nav-item">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Yatırımlar</span>
-                    </a>
+                <nav class="nav-menu">
+                    <a href="#features" class="nav-link">Özellikler</a>
+                    <a href="#how-it-works" class="nav-link">Nasıl Çalışır?</a>
+                    <a href="#demo" class="nav-link">Demo</a>
+                </nav>
+
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+                    <a href="signup.html" class="btn btn-primary">Hesap Oluştur</a>
                 </div>
 
-                <!-- Analytics -->
-                <div class="nav-section">
-                    <h3>Analiz</h3>
-                    <a href="#insights" class="nav-item">
-                        <i class="fas fa-lightbulb"></i>
-                        <span>Öngörüler</span>
-                    </a>
-                    <a href="#reports" class="nav-item">
-                        <i class="fas fa-file-chart-line"></i>
-                        <span>Raporlar</span>
-                    </a>
-                </div>
-
-                <!-- Settings -->
-                <div class="nav-section">
-                    <h3>Hesap</h3>
-                    <a href="#profile" class="nav-item">
-                        <i class="fas fa-user"></i>
-                        <span>Profil</span>
-                    </a>
-                    <a href="#settings" class="nav-item">
-                        <i class="fas fa-cog"></i>
-                        <span>Ayarlar</span>
-                    </a>
-                    <a href="#logout" class="nav-item" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Çıkış</span>
-                    </a>
-                </div>
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-        </nav>
+        </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Dashboard Header -->
-            <div class="dashboard-header">
-                <div class="header-content">
-                    <h1>Finansal Dashboard</h1>
-                    <p>Bugünkü bütçeniz ve finansal durumunuz</p>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-background">
+                <div class="floating-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                    <div class="shape shape-4"></div>
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content" style="padding: 32px;">
-                <!-- Quick Stats -->
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="dailyBudget">₺0.00</div>
-                        <div class="stat-label">Günlük Bütçe</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="monthlySpent">₺0.00</div>
-                        <div class="stat-label">Bu Ay Harcanan</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="savingsRate">%0</div>
-                        <div class="stat-label">Tasarruf Oranı</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="investmentGrowth">%0</div>
-                        <div class="stat-label">Yatırım Getirisi</div>
-                    </div>
-                </div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        Finansal Özgürlüğünüz İçin
+                        <span class="gradient-text">Akıllı Rehber</span>
+                    </h1>
+                    <p class="hero-description">
+                        Sikke ile gelirlerinizi, giderlerinizi ve hedeflerinizi yönetin.
+                        Günlük harcama limitinizi otomatik hesaplayın, tasarruf edin ve
+                        yatırım fırsatlarını keşfedin.
+                    </p>
 
-                <!-- Charts & Insights Grid -->
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
-                    <!-- Spending Chart -->
-                    <div class="card">
-                        <div class="card-title">Harcama Dağılımı</div>
-                        <div class="chart-container">
-                            <canvas id="spendingChart"></canvas>
+                    <div class="hero-actions">
+                        <a href="signup.html" class="btn btn-primary btn-large">
+                            <span>Ücretsiz Başla</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <a href="#demo" class="btn btn-outline btn-large">Demo'yu Gör</a>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="dailyLimitCounter">0</div>
+                            <div class="stat-label">Ort. Günlük Limit</div>
                         </div>
-                    </div>
-
-                    <!-- Financial Insights -->
-                    <div class="card">
-                        <div class="card-title">Finansal Öngörüler</div>
-                        <div id="insightsList" class="space-y-4">
-                            <!-- Insights will be loaded here -->
+                        <div class="stat-item">
+                            <div class="stat-value" id="savingsCounter">0</div>
+                            <div class="stat-label">Tasarruf Oranı</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="usersCounter">0</div>
+                            <div class="stat-label">Mutlu Kullanıcı</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activity & Goals -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                    <!-- Recent Expenses -->
-                    <div class="card">
-                        <div class="flex-between mb-4">
-                            <div class="card-title">Son Harcamalar</div>
-                            <button class="btn btn-secondary btn-sm" onclick="showAddExpenseModal()">
-                                <i class="fas fa-plus"></i> Ekle
-                            </button>
+                <div class="hero-visual">
+                    <div class="dashboard-preview">
+                        <div class="preview-header">
+                            <div class="preview-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </div>
-                        <div id="recentExpenses">
-                            <!-- Expenses will be loaded here -->
-                        </div>
-                    </div>
+                        <div class="preview-content">
+                            <div class="preview-card budget-card">
+                                <div class="card-header">
+                                    <h4>Günlük Bütçe</h4>
+                                    <span class="amount">₺147.50</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                                <div class="card-footer">
+                                    <span>Kalan: ₺51.63</span>
+                                    <span>Harcanan: ₺95.87</span>
+                                </div>
+                            </div>
 
-                    <!-- Active Goals -->
-                    <div class="card">
-                        <div class="flex-between mb-4">
-                            <div class="card-title">Aktif Hedefler</div>
-                            <button class="btn btn-secondary btn-sm" onclick="showAddGoalModal()">
-                                <i class="fas fa-plus"></i> Yeni
-                            </button>
-                        </div>
-                        <div id="activeGoals">
-                            <!-- Goals will be loaded here -->
+                            <div class="preview-card goal-card">
+                                <div class="card-header">
+                                    <h4>Yeni Laptop</h4>
+                                    <span class="progress-text">%42</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 42%"></div>
+                                </div>
+                                <div class="card-footer">
+                                    <span>₺8,400 / ₺20,000</span>
+                                </div>
+                            </div>
+
+                            <div class="chart-placeholder">
+                                <div class="chart-bars">
+                                    <div class="bar" style="height: 40%"></div>
+                                    <div class="bar" style="height: 70%"></div>
+                                    <div class="bar" style="height: 50%"></div>
+                                    <div class="bar" style="height: 85%"></div>
+                                    <div class="bar" style="height: 60%"></div>
+                                    <div class="bar" style="height: 45%"></div>
+                                    <div class="bar" style="height: 75%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Güçlü Özellikler</h2>
+                    <p class="section-subtitle">Finansal kontrolü elinize alın</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.36 14.3C16.36 14.69 16.05 15 15.66 15H8.34C7.95 15 7.64 14.69 7.64 14.3C7.64 13.91 7.95 13.6 8.34 13.6H15.66C16.05 13.6 16.36 13.91 16.36 14.3ZM16.36 10.7C16.36 11.09 16.05 11.4 15.66 11.4H8.34C7.95 11.4 7.64 11.09 7.64 10.7C7.64 10.31 7.95 10 8.34 10H15.66C16.05 10 16.36 10.31 16.36 10.7Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3>Akıllı Bütçe Takibi</h3>
+                        <p>Gelir ve giderlerinizi kolayca takip edin, günlük harcama limitinizi otomatik olarak hesaplayın.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3>Hedef Bazlı Tasarruf</h3>
+                        <p>Hayalleriniz için tasarruf edin. Hedeflerinize ne kadar yaklaştığınızı görün.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.5 16.5H7.5V15H16.5V16.5ZM16.5 12.75H7.5V11.25H16.5V12.75ZM16.5 9H7.5V7.5H16.5V9Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3>Yatırım Önerileri</h3>
+                        <p>Fazla paranızı değerlendirmek için kişiselleştirilmiş yatırım simülasyonları.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3>Akıllı İstatistikler</h3>
+                        <p>Harcama alışkanlıklarınızı analiz edin, tasarruf fırsatlarını keşfedin.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section class="demo-section" id="demo">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Nasıl Çalışır?</h2>
+                    <p class="section-subtitle">4 adımda finansal kontrol</p>
+                </div>
+
+                <div class="demo-steps">
+                    <div class="step-item">
+                        <div class="step-number">01</div>
+                        <h3>Hesap Oluştur</h3>
+                        <p>Kişisel finans asistanınıza başlamak için ücretsiz hesap oluşturun</p>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">02</div>
+                        <h3>Gelir & Gider Tanımla</h3>
+                        <p>Aylık gelirinizi ve sabit giderlerinizi sisteme girin</p>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">03</div>
+                        <h3>Hedefler Belirle</h3>
+                        <p>Tasarruf etmek istediğiniz hedefleri ve tarihleri belirleyin</p>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">04</div>
+                        <h3>Takip Et & Yönet</h3>
+                        <p>Günlük limitinizi takip edin, harcamalarınızı yönetin</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Finansal Özgürlüğe İlk Adımınızı Atın</h2>
+                    <p>Şimdi başlayın, geleceğinizi güvence altına alın</p>
+                    <a href="signup.html" class="btn btn-primary btn-large">Ücretsiz Hesap Oluştur</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <div class="logo">
+                            <span class="logo-icon">₺</span>
+                            <h3 class="logo-text">Sikke</h3>
+                        </div>
+                        <p>Kişisel finans yönetiminde devrim</p>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Bağlantılar</h4>
+                        <a href="#features">Özellikler</a>
+                        <a href="#demo">Nasıl Çalışır?</a>
+                        <a href="login.html">Giriş Yap</a>
+                        <a href="signup.html">Kayıt Ol</a>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Destek</h4>
+                        <a href="#">Yardım Merkezi</a>
+                        <a href="#">İletişim</a>
+                        <a href="#">Gizlilik Politikası</a>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2024 Sikke. Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <!-- Modals -->
-    <div id="modalsContainer">
-        <!-- Modals will be injected here -->
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="#features" class="mobile-nav-link">Özellikler</a>
+            <a href="#how-it-works" class="mobile-nav-link">Nasıl Çalışır?</a>
+            <a href="#demo" class="mobile-nav-link">Demo</a>
+            <div class="mobile-auth-buttons">
+                <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+                <a href="signup.html" class="btn btn-primary">Hesap Oluştur</a>
+            </div>
+        </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

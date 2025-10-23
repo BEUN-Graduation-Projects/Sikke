@@ -1,10 +1,926 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayarlar - Sikke</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/goals.css">
+    <link rel="stylesheet" href="css/investments.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="dark-theme settings-page">
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="gradient-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+        </div>
+    </div>
 
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
+                    </a>
+                </div>
+
+                <nav class="nav-menu">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="goals.html" class="nav-link">
+                        <i class="fas fa-bullseye"></i>
+                        Hedefler
+                    </a>
+                    <a href="investments.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Yatırım
+                    </a>
+                    <a href="settings.html" class="nav-link active">
+                        <i class="fas fa-cog"></i>
+                        Ayarlar
+                    </a>
+                </nav>
+
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı" id="userAvatar">
+                        <div class="user-status"></div>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Kullanıcı</span>
+                        <span class="user-email" id="userEmail">user@example.com</span>
+                    </div>
+                    <div class="dropdown-menu">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="settings.html"><i class="fas fa-user"></i>Profil</a>
+                            <a href="#"><i class="fas fa-bell"></i>Bildirimler</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" onclick="SikkeApp.logout()"><i class="fas fa-sign-out-alt"></i>Çıkış Yap</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="header-content">
+                        <h1>Ayarlar</h1>
+                        <p>Hesap ve uygulama tercihlerinizi yönetin</p>
+                    </div>
+                </div>
+
+                <!-- Settings Navigation -->
+                <div class="settings-navigation">
+                    <div class="nav-sidebar">
+                        <button class="nav-item active" data-tab="profile">
+                            <i class="fas fa-user"></i>
+                            <span>Profil</span>
+                        </button>
+                        <button class="nav-item" data-tab="notifications">
+                            <i class="fas fa-bell"></i>
+                            <span>Bildirimler</span>
+                        </button>
+                        <button class="nav-item" data-tab="budget">
+                            <i class="fas fa-wallet"></i>
+                            <span>Bütçe Ayarları</span>
+                        </button>
+                        <button class="nav-item" data-tab="security">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Güvenlik</span>
+                        </button>
+                        <button class="nav-item" data-tab="preferences">
+                            <i class="fas fa-palette"></i>
+                            <span>Görünüm</span>
+                        </button>
+                        <button class="nav-item" data-tab="data">
+                            <i class="fas fa-database"></i>
+                            <span>Veri Yönetimi</span>
+                        </button>
+                        <button class="nav-item" data-tab="about">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Hakkında</span>
+                        </button>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="settings-content">
+                        <!-- Profile Tab -->
+                        <div class="settings-tab active" id="profile-tab">
+                            <div class="tab-header">
+                                <h2>Profil Bilgileri</h2>
+                                <p>Kişisel bilgilerinizi ve iletişim tercihlerinizi güncelleyin</p>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-avatar">
+                                    <div class="avatar-container">
+                                        <img src="assets/icons/user-default.png" alt="Profil" id="profileAvatar">
+                                        <button class="avatar-edit" id="editAvatarBtn">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                    </div>
+                                    <div class="avatar-info">
+                                        <h3 id="profileUserName">Kullanıcı</h3>
+                                        <p id="profileUserEmail">user@example.com</p>
+                                        <button class="btn btn-outline btn-sm" id="changeAvatarBtn">
+                                            <i class="fas fa-sync"></i>
+                                            Fotoğraf Değiştir
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <form class="profile-form" id="profileForm">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Ad Soyad</label>
+                                            <input type="text" id="profileFullName" class="form-input" placeholder="Adınız ve soyadınız" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">E-posta</label>
+                                            <input type="email" id="profileEmail" class="form-input" placeholder="E-posta adresiniz" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Telefon</label>
+                                            <input type="tel" id="profilePhone" class="form-input" placeholder="+90 (5__) ___ ____">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Doğum Tarihi</label>
+                                            <input type="date" id="profileBirthDate" class="form-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Hakkımda</label>
+                                        <textarea id="profileBio" class="form-input" rows="3" placeholder="Kendiniz hakkında kısa bir açıklama..."></textarea>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-outline" id="cancelProfile">İptal</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <span>Değişiklikleri Kaydet</span>
+                                            <div class="btn-loader" style="display: none;">
+                                                <div class="loader-dots">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Notifications Tab -->
+                        <div class="settings-tab" id="notifications-tab">
+                            <div class="tab-header">
+                                <h2>Bildirim Ayarları</h2>
+                                <p>Hangi bildirimleri almak istediğinizi seçin</p>
+                            </div>
+
+                            <div class="notifications-section">
+                                <div class="notification-category">
+                                    <h3>Finansal Bildirimler</h3>
+                                    <div class="notification-list">
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Bütçe Uyarıları</h4>
+                                                <p>Günlük bütçeniz aşıldığında bildirim alın</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="budgetAlerts" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Hedef İlerleme</h4>
+                                                <p>Hedeflerinizdeki ilerlemeyle ilgili güncellemeler</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="goalProgress" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Yatırım Önerileri</h4>
+                                                <p>Kişiselleştirilmiş yatırım önerileri</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="investmentSuggestions" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notification-category">
+                                    <h3>Sistem Bildirimleri</h3>
+                                    <div class="notification-list">
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Uygulama Güncellemeleri</h4>
+                                                <p>Yeni özellikler ve iyileştirmeler hakkında bilgi</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="appUpdates" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Güvenlik Uyarıları</h4>
+                                                <p>Hesap güvenliği ile ilgili önemli bildirimler</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="securityAlerts" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Haftalık Özet</h4>
+                                                <p>Haftalık finansal özet raporu</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="weeklySummary">
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notification-category">
+                                    <h3>Bildirim Yöntemleri</h3>
+                                    <div class="notification-list">
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>E-posta Bildirimleri</h4>
+                                                <p>Önemli bildirimleri e-posta ile alın</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="emailNotifications" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Push Bildirimler</h4>
+                                                <p>Anlık bildirimleri tarayıcınızda alın</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="pushNotifications" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Settings Tab -->
+                        <div class="settings-tab" id="budget-tab">
+                            <div class="tab-header">
+                                <h2>Bütçe Ayarları</h2>
+                                <p>Finansal planlamanızı kişiselleştirin</p>
+                            </div>
+
+                            <div class="budget-settings">
+                                <div class="setting-group">
+                                    <h3>Gelir ve Giderler</h3>
+                                    <form class="budget-form" id="incomeForm">
+                                        <div class="form-group">
+                                            <label class="form-label">Aylık Net Gelir</label>
+                                            <input type="number" id="monthlyIncome" class="form-input" placeholder="₺0.00" step="0.01" required>
+                                            <div class="form-help">Vergiler ve kesintiler sonrası net geliriniz</div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Sabit Aylık Giderler</label>
+                                            <input type="number" id="monthlyExpenses" class="form-input" placeholder="₺0.00" step="0.01" required>
+                                            <div class="form-help">Kira, fatura, abonelikler gibi sabit giderler</div>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-primary">Bütçeyi Güncelle</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="setting-group">
+                                    <h3>Tasarruf Hedefleri</h3>
+                                    <div class="savings-settings">
+                                        <div class="savings-item">
+                                            <div class="savings-info">
+                                                <h4>Otomatik Tasarruf</h4>
+                                                <p>Her ay gelirinizin belirli bir yüzdesini otomatik olarak tasarrufa ayırın</p>
+                                            </div>
+                                            <div class="savings-control">
+                                                <input type="range" id="savingsPercentage" class="slider" min="0" max="50" value="10">
+                                                <div class="slider-value">
+                                                    <span id="savingsValue">10%</span>
+                                                    <span>₺<span id="savingsAmount">0</span>/ay</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="savings-item">
+                                            <div class="savings-info">
+                                                <h4>Acil Durum Fonu</h4>
+                                                <p>3-6 aylık giderlerinizi karşılayacak acil durum fonu hedefi</p>
+                                            </div>
+                                            <div class="savings-control">
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="emergencyFund" checked>
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <span class="toggle-label">Aktif</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="setting-group">
+                                    <h3>Harcama Kategorileri</h3>
+                                    <div class="categories-list">
+                                        <div class="category-item">
+                                            <div class="category-color" style="background: #ef4444;"></div>
+                                            <span class="category-name">Yemek</span>
+                                            <button class="btn-icon-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="category-item">
+                                            <div class="category-color" style="background: #3b82f6;"></div>
+                                            <span class="category-name">Ulaşım</span>
+                                            <button class="btn-icon-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="category-item">
+                                            <div class="category-color" style="background: #8b5cf6;"></div>
+                                            <span class="category-name">Alışveriş</span>
+                                            <button class="btn-icon-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="category-item">
+                                            <div class="category-color" style="background: #f59e0b;"></div>
+                                            <span class="category-name">Eğlence</span>
+                                            <button class="btn-icon-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="category-item">
+                                            <div class="category-color" style="background: #10b981;"></div>
+                                            <span class="category-name">Faturalar</span>
+                                            <button class="btn-icon-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <button class="btn btn-outline btn-full">
+                                            <i class="fas fa-plus"></i>
+                                            Yeni Kategori Ekle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div class="settings-tab" id="security-tab">
+                            <div class="tab-header">
+                                <h2>Güvenlik Ayarları</h2>
+                                <p>Hesabınızın güvenliğini yönetin</p>
+                            </div>
+
+                            <div class="security-settings">
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Şifre Değiştir</h4>
+                                        <p>Hesap şifrenizi güncelleyin</p>
+                                    </div>
+                                    <button class="btn btn-outline" id="changePasswordBtn">Şifre Değiştir</button>
+                                </div>
+
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>İki Faktörlü Doğrulama</h4>
+                                        <p>Hesabınızı ek güvenlik katmanı ile koruyun</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="twoFactorAuth">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Oturum Yönetimi</h4>
+                                        <p>Aktif oturumlarınızı görüntüleyin ve yönetin</p>
+                                    </div>
+                                    <button class="btn btn-outline" id="manageSessionsBtn">Oturumları Yönet</button>
+                                </div>
+
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Şüpheli Etkinlik Bildirimi</h4>
+                                        <p>Olağandışı hesap etkinliklerinde bildirim alın</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="suspiciousActivity" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="security-section">
+                                    <h3>Güvenlik Geçmişi</h3>
+                                    <div class="security-history">
+                                        <div class="history-item">
+                                            <div class="history-icon success">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                            <div class="history-details">
+                                                <div class="history-title">Başarılı Giriş</div>
+                                                <div class="history-info">Chrome, Windows • İstanbul</div>
+                                            </div>
+                                            <div class="history-time">2 saat önce</div>
+                                        </div>
+
+                                        <div class="history-item">
+                                            <div class="history-icon info">
+                                                <i class="fas fa-sync"></i>
+                                            </div>
+                                            <div class="history-details">
+                                                <div class="history-title">Şifre Değişikliği</div>
+                                                <div class="history-info">Hesap şifreniz güncellendi</div>
+                                            </div>
+                                            <div class="history-time">3 gün önce</div>
+                                        </div>
+
+                                        <div class="history-item">
+                                            <div class="history-icon warning">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </div>
+                                            <div class="history-details">
+                                                <div class="history-title">Başarısız Giriş Denemesi</div>
+                                                <div class="history-info">Mobil cihaz, Ankara</div>
+                                            </div>
+                                            <div class="history-time">1 hafta önce</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preferences Tab -->
+                        <div class="settings-tab" id="preferences-tab">
+                            <div class="tab-header">
+                                <h2>Görünüm ve Tercihler</h2>
+                                <p>Uygulama görünümünü kişiselleştirin</p>
+                            </div>
+
+                            <div class="preferences-settings">
+                                <div class="preference-group">
+                                    <h3>Tema Ayarları</h3>
+                                    <div class="theme-options">
+                                        <label class="theme-option">
+                                            <input type="radio" name="theme" value="dark" checked>
+                                            <div class="theme-preview dark">
+                                                <div class="theme-header"></div>
+                                                <div class="theme-content">
+                                                    <div class="theme-card"></div>
+                                                    <div class="theme-card"></div>
+                                                </div>
+                                            </div>
+                                            <span>Koyu</span>
+                                        </label>
+
+                                        <label class="theme-option">
+                                            <input type="radio" name="theme" value="light">
+                                            <div class="theme-preview light">
+                                                <div class="theme-header"></div>
+                                                <div class="theme-content">
+                                                    <div class="theme-card"></div>
+                                                    <div class="theme-card"></div>
+                                                </div>
+                                            </div>
+                                            <span>Açık</span>
+                                        </label>
+
+                                        <label class="theme-option">
+                                            <input type="radio" name="theme" value="auto">
+                                            <div class="theme-preview auto">
+                                                <div class="theme-header"></div>
+                                                <div class="theme-content">
+                                                    <div class="theme-card"></div>
+                                                    <div class="theme-card"></div>
+                                                </div>
+                                            </div>
+                                            <span>Sistem</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="preference-group">
+                                    <h3>Para Birimi</h3>
+                                    <div class="currency-options">
+                                        <select id="currencySelect" class="form-input">
+                                            <option value="TRY" selected>Türk Lirası (₺)</option>
+                                            <option value="USD">Amerikan Doları ($)</option>
+                                            <option value="EUR">Euro (€)</option>
+                                            <option value="GBP">İngiliz Sterlini (£)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="preference-group">
+                                    <h3>Tarih ve Saat Formatı</h3>
+                                    <div class="format-options">
+                                        <div class="format-row">
+                                            <label class="format-option">
+                                                <input type="radio" name="dateFormat" value="DD/MM/YYYY" checked>
+                                                <span>GG/AA/YYYY (24/12/2023)</span>
+                                            </label>
+                                            <label class="format-option">
+                                                <input type="radio" name="dateFormat" value="MM/DD/YYYY">
+                                                <span>AA/GG/YYYY (12/24/2023)</span>
+                                            </label>
+                                        </div>
+                                        <div class="format-row">
+                                            <label class="format-option">
+                                                <input type="radio" name="timeFormat" value="24h" checked>
+                                                <span>24 saat (14:30)</span>
+                                            </label>
+                                            <label class="format-option">
+                                                <input type="radio" name="timeFormat" value="12h">
+                                                <span>12 saat (2:30 PM)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="preference-group">
+                                    <h3>Diğer Tercihler</h3>
+                                    <div class="other-preferences">
+                                        <div class="preference-item">
+                                            <div class="preference-info">
+                                                <h4>Animasyonlar</h4>
+                                                <p>Arayüz animasyonlarını göster/gizle</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="animations" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="preference-item">
+                                            <div class="preference-info">
+                                                <h4>Komut Dosyası Önerileri</h4>
+                                                <p>Akıllı tasarruf önerilerini göster</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="insightSuggestions" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="preference-item">
+                                            <div class="preference-info">
+                                                <h4>Otomatik Yedekleme</h4>
+                                                <p>Verilerinizi otomatik olarak yedekle</p>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="autoBackup" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Management Tab -->
+                        <div class="settings-tab" id="data-tab">
+                            <div class="tab-header">
+                                <h2>Veri Yönetimi</h2>
+                                <p>Verilerinizi yedekleyin veya dışa aktarın</p>
+                            </div>
+
+                            <div class="data-settings">
+                                <div class="data-section">
+                                    <h3>Veri İşlemleri</h3>
+                                    <div class="data-actions">
+                                        <div class="data-action">
+                                            <div class="action-info">
+                                                <h4>Verileri Dışa Aktar</h4>
+                                                <p>Tüm finansal verilerinizi CSV formatında indirin</p>
+                                            </div>
+                                            <button class="btn btn-outline" id="exportDataBtn">
+                                                <i class="fas fa-download"></i>
+                                                Dışa Aktar
+                                            </button>
+                                        </div>
+
+                                        <div class="data-action">
+                                            <div class="action-info">
+                                                <h4>Verileri Yedekle</h4>
+                                                <p>Hesap verilerinizin tam yedeğini alın</p>
+                                            </div>
+                                            <button class="btn btn-outline" id="backupDataBtn">
+                                                <i class="fas fa-save"></i>
+                                                Yedek Al
+                                            </button>
+                                        </div>
+
+                                        <div class="data-action">
+                                            <div class="action-info">
+                                                <h4>Verileri İçe Aktar</h4>
+                                                <p>CSV dosyasından veri içe aktarın</p>
+                                            </div>
+                                            <button class="btn btn-outline" id="importDataBtn">
+                                                <i class="fas fa-upload"></i>
+                                                İçe Aktar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="data-section">
+                                    <h3>Veri Temizleme</h3>
+                                    <div class="data-actions">
+                                        <div class="data-action danger">
+                                            <div class="action-info">
+                                                <h4>Önbelleği Temizle</h4>
+                                                <p>Uygulama önbellek verilerini temizleyin</p>
+                                            </div>
+                                            <button class="btn btn-outline" id="clearCacheBtn">
+                                                <i class="fas fa-broom"></i>
+                                                Temizle
+                                            </button>
+                                        </div>
+
+                                        <div class="data-action danger">
+                                            <div class="action-info">
+                                                <h4>Tüm Verileri Sil</h4>
+                                                <p>Tüm hesap verilerinizi kalıcı olarak silin</p>
+                                                <div class="warning-text">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    Bu işlem geri alınamaz!
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-danger" id="deleteAllDataBtn">
+                                                <i class="fas fa-trash"></i>
+                                                Tümünü Sil
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="data-section">
+                                    <h3>Veri Kullanımı</h3>
+                                    <div class="data-usage">
+                                        <div class="usage-item">
+                                            <span class="usage-label">Toplam Veri Boyutu</span>
+                                            <span class="usage-value">2.4 MB</span>
+                                        </div>
+                                        <div class="usage-item">
+                                            <span class="usage-label">Harcamalar</span>
+                                            <span class="usage-value">124 kayıt</span>
+                                        </div>
+                                        <div class="usage-item">
+                                            <span class="usage-label">Hedefler</span>
+                                            <span class="usage-value">5 kayıt</span>
+                                        </div>
+                                        <div class="usage-item">
+                                            <span class="usage-label">Yatırımlar</span>
+                                            <span class="usage-value">3 kayıt</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- About Tab -->
+                        <div class="settings-tab" id="about-tab">
+                            <div class="tab-header">
+                                <h2>Hakkında</h2>
+                                <p>Uygulama bilgileri ve destek</p>
+                            </div>
+
+                            <div class="about-settings">
+                                <div class="about-section">
+                                    <div class="app-info">
+                                        <div class="app-logo">
+                                            <span class="logo-icon large">₺</span>
+                                        </div>
+                                        <div class="app-details">
+                                            <h3>Sikke</h3>
+                                            <p class="app-version">Sürüm 1.0.0</p>
+                                            <p class="app-description">Kişisel Finans Asistanı</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="app-features">
+                                        <div class="feature-item">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>Güvenli & Yerel</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="fas fa-rocket"></i>
+                                            <span>Hızlı & Responsive</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="fas fa-lock"></i>
+                                            <span>Gizlilik Odaklı</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="about-section">
+                                    <h3>Destek</h3>
+                                    <div class="support-actions">
+                                        <button class="support-btn">
+                                            <i class="fas fa-question-circle"></i>
+                                            <span>Yardım Merkezi</span>
+                                        </button>
+                                        <button class="support-btn">
+                                            <i class="fas fa-bug"></i>
+                                            <span>Hata Bildir</span>
+                                        </button>
+                                        <button class="support-btn">
+                                            <i class="fas fa-lightbulb"></i>
+                                            <span>Öneride Bulun</span>
+                                        </button>
+                                        <button class="support-btn">
+                                            <i class="fas fa-star"></i>
+                                            <span>Uygulamayı Değerlendir</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="about-section">
+                                    <h3>Yasal</h3>
+                                    <div class="legal-links">
+                                        <a href="#" class="legal-link">Kullanım Koşulları</a>
+                                        <a href="#" class="legal-link">Gizlilik Politikası</a>
+                                        <a href="#" class="legal-link">Lisans Bilgileri</a>
+                                        <a href="#" class="legal-link">Üçüncü Taraf Lisansları</a>
+                                    </div>
+                                </div>
+
+                                <div class="about-section">
+                                    <h3>Geliştirici</h3>
+                                    <div class="developer-info">
+                                        <p>Sikke, kişisel finans yönetimini kolaylaştırmak için geliştirilmiş açık kaynaklı bir projedir.</p>
+                                        <div class="developer-links">
+                                            <a href="#" class="dev-link">
+                                                <i class="fab fa-github"></i>
+                                                GitHub
+                                            </a>
+                                            <a href="#" class="dev-link">
+                                                <i class="fas fa-globe"></i>
+                                                Website
+                                            </a>
+                                            <a href="#" class="dev-link">
+                                                <i class="fab fa-twitter"></i>
+                                                Twitter
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="dashboard.html" class="mobile-nav-link">
+                <i class="fas fa-chart-pie"></i>
+                Dashboard
+            </a>
+            <a href="goals.html" class="mobile-nav-link">
+                <i class="fas fa-bullseye"></i>
+                Hedefler
+            </a>
+            <a href="investments.html" class="mobile-nav-link">
+                <i class="fas fa-chart-line"></i>
+                Yatırım
+            </a>
+            <a href="settings.html" class="mobile-nav-link active">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+            <div class="mobile-user-section">
+                <div class="mobile-user-info">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı">
+                    </div>
+                    <div>
+                        <div class="user-name" id="mobileUserName">Kullanıcı</div>
+                        <div class="user-email" id="mobileUserEmail">user@example.com</div>
+                    </div>
+                </div>
+                <a href="#" onclick="SikkeApp.logout()" class="btn btn-outline btn-full">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Şifre Değiştir</h3>
+                <button class="modal-close" id="closePasswordModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label class="form-label">Mevcut Şifre</label>
+                        <input type="password" id="currentPassword" class="form-input" placeholder="Mevcut şifreniz" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Yeni Şifre</label>
+                        <input type="password" id="newPassword" class="form-input" placeholder="En az 8 karakter" minlength="8" required>
+                        <div class="password-strength">
+                            <div class="strength-bars">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                            <div class="strength-text">Şifre gücü: <span>zayıf</span></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Yeni Şifre Tekrarı</label>
+                        <input type="password" id="confirmNewPassword" class="form-input" placeholder="Yeni şifrenizi tekrar girin" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelPassword">İptal</button>
+                        <button type="submit" class="btn btn-primary">Şifreyi Değiştir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/settings.js"></script>
 </body>
 </html>

@@ -1,10 +1,530 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sikke</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="dark-theme dashboard-page">
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="gradient-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+        </div>
+    </div>
 
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
+                    </a>
+                </div>
+
+                <nav class="nav-menu">
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="goals.html" class="nav-link">
+                        <i class="fas fa-bullseye"></i>
+                        Hedefler
+                    </a>
+                    <a href="investments.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Yatırım
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Ayarlar
+                    </a>
+                </nav>
+
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı" id="userAvatar">
+                        <div class="user-status"></div>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Kullanıcı</span>
+                        <span class="user-email" id="userEmail">user@example.com</span>
+                    </div>
+                    <div class="dropdown-menu">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="settings.html"><i class="fas fa-user"></i>Profil</a>
+                            <a href="#"><i class="fas fa-bell"></i>Bildirimler</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" onclick="SikkeApp.logout()"><i class="fas fa-sign-out-alt"></i>Çıkış Yap</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="header-content">
+                        <h1>Dashboard</h1>
+                        <p>Finansal durumunuzun genel görünümü</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="date-selector">
+                            <button class="date-btn active">Bu Ay</button>
+                            <button class="date-btn">Geçen Ay</button>
+                            <button class="date-btn">3 Aylık</button>
+                        </div>
+                        <button class="btn btn-primary" id="addExpenseBtn">
+                            <i class="fas fa-plus"></i>
+                            Harcama Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dailyBudget">₺147.50</div>
+                            <div class="stat-label">Günlük Bütçe</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12% geçen aya göre</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalSavings">₺8,400</div>
+                            <div class="stat-label">Toplam Tasarruf</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+₺1,200 bu ay</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="investmentValue">₺2,150</div>
+                            <div class="stat-label">Yatırım Değeri</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+5.2% getiri</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="goalsProgress">3/5</div>
+                            <div class="stat-label">Hedefler Tamamlandı</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-trending-up"></i>
+                                <span>%60 ilerleme</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Grid -->
+                <div class="dashboard-grid">
+                    <!-- Left Column -->
+                    <div class="grid-column">
+                        <!-- Budget Chart -->
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Bütçe Dağılımı</h3>
+                                <div class="card-actions">
+                                    <button class="btn-icon">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="budgetChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Expenses -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Son Harcamalar</h3>
+                                <a href="#" class="btn-link">Tümünü Gör</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="expenses-list">
+                                    <div class="expense-item">
+                                        <div class="expense-icon category-food">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                        <div class="expense-details">
+                                            <div class="expense-title">Restoran</div>
+                                            <div class="expense-category">Yemek</div>
+                                        </div>
+                                        <div class="expense-amount negative">-₺85.00</div>
+                                        <div class="expense-time">2 saat önce</div>
+                                    </div>
+
+                                    <div class="expense-item">
+                                        <div class="expense-icon category-transport">
+                                            <i class="fas fa-bus"></i>
+                                        </div>
+                                        <div class="expense-details">
+                                            <div class="expense-title">Taksi</div>
+                                            <div class="expense-category">Ulaşım</div>
+                                        </div>
+                                        <div class="expense-amount negative">-₺45.00</div>
+                                        <div class="expense-time">5 saat önce</div>
+                                    </div>
+
+                                    <div class="expense-item">
+                                        <div class="expense-icon category-shopping">
+                                            <i class="fas fa-shopping-bag"></i>
+                                        </div>
+                                        <div class="expense-details">
+                                            <div class="expense-title">Market Alışverişi</div>
+                                            <div class="expense-category">Alışveriş</div>
+                                        </div>
+                                        <div class="expense-amount negative">-₺120.50</div>
+                                        <div class="expense-time">1 gün önce</div>
+                                    </div>
+
+                                    <div class="expense-item">
+                                        <div class="expense-icon category-entertainment">
+                                            <i class="fas fa-film"></i>
+                                        </div>
+                                        <div class="expense-details">
+                                            <div class="expense-title">Sinema</div>
+                                            <div class="expense-category">Eğlence</div>
+                                        </div>
+                                        <div class="expense-amount negative">-₺60.00</div>
+                                        <div class="expense-time">2 gün önce</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="grid-column">
+                        <!-- Daily Budget Progress -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Günlük Bütçe Durumu</h3>
+                                <div class="budget-remaining">
+                                    <span class="amount">₺51.63</span>
+                                    <span class="label">Kalan</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="budget-progress-large">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 65%"></div>
+                                        <div class="progress-marker" style="left: 65%">
+                                            <div class="marker-tooltip">₺95.87 harcandı</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-labels">
+                                        <span>₺0</span>
+                                        <span>₺147.50</span>
+                                    </div>
+                                </div>
+                                <div class="budget-stats">
+                                    <div class="stat">
+                                        <div class="stat-value">₺95.87</div>
+                                        <div class="stat-label">Harcanan</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value">₺51.63</div>
+                                        <div class="stat-label">Kalan</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value">%65</div>
+                                        <div class="stat-label">Kullanım</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Goals -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Aktif Hedefler</h3>
+                                <a href="goals.html" class="btn-link">Yeni Ekle</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="goals-list">
+                                    <div class="goal-item">
+                                        <div class="goal-info">
+                                            <div class="goal-title">Yeni Laptop</div>
+                                            <div class="goal-target">₺20,000</div>
+                                        </div>
+                                        <div class="goal-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 42%"></div>
+                                            </div>
+                                            <div class="progress-text">%42</div>
+                                        </div>
+                                        <div class="goal-amount">₺8,400</div>
+                                    </div>
+
+                                    <div class="goal-item">
+                                        <div class="goal-info">
+                                            <div class="goal-title">Tatil</div>
+                                            <div class="goal-target">₺15,000</div>
+                                        </div>
+                                        <div class="goal-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 75%"></div>
+                                            </div>
+                                            <div class="progress-text">%75</div>
+                                        </div>
+                                        <div class="goal-amount">₺11,250</div>
+                                    </div>
+
+                                    <div class="goal-item">
+                                        <div class="goal-info">
+                                            <div class="goal-title">Araba</div>
+                                            <div class="goal-target">₺150,000</div>
+                                        </div>
+                                        <div class="goal-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 18%"></div>
+                                            </div>
+                                            <div class="progress-text">%18</div>
+                                        </div>
+                                        <div class="goal-amount">₺27,000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investment Suggestions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Yatırım Önerileri</h3>
+                                <span class="badge badge-primary">Simülasyon</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="investments-list">
+                                    <div class="investment-item">
+                                        <div class="investment-icon">
+                                            <i class="fab fa-bitcoin"></i>
+                                        </div>
+                                        <div class="investment-details">
+                                            <div class="investment-name">Bitcoin</div>
+                                            <div class="investment-symbol">BTC</div>
+                                        </div>
+                                        <div class="investment-change positive">+5.2%</div>
+                                        <div class="investment-amount">₺500</div>
+                                    </div>
+
+                                    <div class="investment-item">
+                                        <div class="investment-icon">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="investment-details">
+                                            <div class="investment-name">BIST 100</div>
+                                            <div class="investment-symbol">XU100</div>
+                                        </div>
+                                        <div class="investment-change positive">+2.1%</div>
+                                        <div class="investment-amount">₺300</div>
+                                    </div>
+
+                                    <div class="investment-item">
+                                        <div class="investment-icon">
+                                            <i class="fas fa-coins"></i>
+                                        </div>
+                                        <div class="investment-details">
+                                            <div class="investment-name">Altın</div>
+                                            <div class="investment-symbol">GLD</div>
+                                        </div>
+                                        <div class="investment-change positive">+1.5%</div>
+                                        <div class="investment-amount">₺200</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline btn-full">
+                                    <i class="fas fa-chart-line"></i>
+                                    Tüm Önerileri Gör
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Section -->
+                <div class="insights-section">
+                    <div class="section-header">
+                        <h2>Akıllı Öngörüler</h2>
+                        <p>Harcama alışkanlıklarınızla ilgili analizler</p>
+                    </div>
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <div class="insight-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="insight-content">
+                                <h4>Yemek Harcamaları Artıyor</h4>
+                                <p>Bu ay yemek harcamalarınız geçen aya göre %25 arttı</p>
+                                <div class="insight-meta">Öneri: Haftalık yemek planı yapın</div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="insight-content">
+                                <h4>Tasarruf Hedefinde İyi Gidiyorsunuz</h4>
+                                <p>Aylık tasarruf hedefinizin %85'ini şimdiden tamamladınız</p>
+                                <div class="insight-meta">Tebrikler! 🎉</div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-icon info">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="insight-content">
+                                <h4>Yatırım Fırsatı</h4>
+                                <p>Fazla bütçeniz var. Yatırım önerilerimizi inceleyin</p>
+                                <div class="insight-meta">Önerilen: ₺500 yatırım</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="dashboard.html" class="mobile-nav-link active">
+                <i class="fas fa-chart-pie"></i>
+                Dashboard
+            </a>
+            <a href="goals.html" class="mobile-nav-link">
+                <i class="fas fa-bullseye"></i>
+                Hedefler
+            </a>
+            <a href="investments.html" class="mobile-nav-link">
+                <i class="fas fa-chart-line"></i>
+                Yatırım
+            </a>
+            <a href="settings.html" class="mobile-nav-link">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+            <div class="mobile-user-section">
+                <div class="mobile-user-info">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı">
+                    </div>
+                    <div>
+                        <div class="user-name" id="mobileUserName">Kullanıcı</div>
+                        <div class="user-email" id="mobileUserEmail">user@example.com</div>
+                    </div>
+                </div>
+                <a href="#" onclick="SikkeApp.logout()" class="btn btn-outline btn-full">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Harcama Ekle</h3>
+                <button class="modal-close" id="closeExpenseModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label class="form-label">Başlık</label>
+                        <input type="text" class="form-input" placeholder="Harcama başlığı" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kategori</label>
+                        <select class="form-input" required>
+                            <option value="">Kategori seçin</option>
+                            <option value="food">Yemek</option>
+                            <option value="transport">Ulaşım</option>
+                            <option value="shopping">Alışveriş</option>
+                            <option value="entertainment">Eğlence</option>
+                            <option value="bills">Faturalar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tutar</label>
+                        <input type="number" class="form-input" placeholder="₺0.00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tarih</label>
+                        <input type="date" class="form-input" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelExpense">İptal</button>
+                        <button type="submit" class="btn btn-primary">Harcama Ekle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

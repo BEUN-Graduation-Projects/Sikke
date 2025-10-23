@@ -1,10 +1,667 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yatırım - Sikke</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/goals.css">
+    <link rel="stylesheet" href="css/investments.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="dark-theme investments-page">
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="gradient-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+        </div>
+    </div>
 
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">₺</span>
+                        <h1 class="logo-text">Sikke</h1>
+                    </a>
+                </div>
+
+                <nav class="nav-menu">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Dashboard
+                    </a>
+                    <a href="goals.html" class="nav-link">
+                        <i class="fas fa-bullseye"></i>
+                        Hedefler
+                    </a>
+                    <a href="investments.html" class="nav-link active">
+                        <i class="fas fa-chart-line"></i>
+                        Yatırım
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Ayarlar
+                    </a>
+                </nav>
+
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı" id="userAvatar">
+                        <div class="user-status"></div>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Kullanıcı</span>
+                        <span class="user-email" id="userEmail">user@example.com</span>
+                    </div>
+                    <div class="dropdown-menu">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="settings.html"><i class="fas fa-user"></i>Profil</a>
+                            <a href="#"><i class="fas fa-bell"></i>Bildirimler</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" onclick="SikkeApp.logout()"><i class="fas fa-sign-out-alt"></i>Çıkış Yap</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="header-content">
+                        <h1>Yatırım Simülasyonu</h1>
+                        <p>Paper trading ile yatırım deneyimi kazanın</p>
+                        <div class="risk-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Bu bir simülasyondur. Gerçek para ile yatırım yapılmamaktadır.</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <div class="time-filters">
+                            <button class="filter-btn active" data-period="1d">1G</button>
+                            <button class="filter-btn" data-period="1w">1H</button>
+                            <button class="filter-btn" data-period="1m">1A</button>
+                            <button class="filter-btn" data-period="3m">3A</button>
+                            <button class="filter-btn" data-period="1y">1Y</button>
+                        </div>
+                        <button class="btn btn-primary" id="addInvestmentBtn">
+                            <i class="fas fa-plus"></i>
+                            Yatırım Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Investment Summary -->
+                <div class="investment-summary">
+                    <div class="summary-card primary">
+                        <div class="summary-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="totalPortfolio">₺2,150</div>
+                            <div class="summary-label">Portföy Değeri</div>
+                            <div class="summary-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+₺105 (5.2%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card success">
+                        <div class="summary-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="totalInvested">₺1,000</div>
+                            <div class="summary-label">Toplam Yatırım</div>
+                            <div class="summary-change">
+                                <span>Başlangıç</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card warning">
+                        <div class="summary-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="totalReturn">₺1,150</div>
+                            <div class="summary-label">Toplam Getiri</div>
+                            <div class="summary-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+115%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card info">
+                        <div class="summary-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-value" id="activeInvestments">3</div>
+                            <div class="summary-label">Aktif Yatırım</div>
+                            <div class="summary-change">
+                                <span>Çeşitlilik</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="investments-grid">
+                    <!-- Left Column -->
+                    <div class="grid-column">
+                        <!-- Portfolio Chart -->
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Portföy Dağılımı</h3>
+                                <div class="card-actions">
+                                    <button class="btn-icon">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="portfolioChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Chart -->
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Performans Geçmişi</h3>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-color portfolio"></div>
+                                        <span>Portföy</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color benchmark"></div>
+                                        <span>BIST 100</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="grid-column">
+                        <!-- Investment Suggestions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Önerilen Yatırımlar</h3>
+                                <span class="badge badge-primary">AI Önerisi</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="suggestions-list">
+                                    <div class="suggestion-item">
+                                        <div class="suggestion-header">
+                                            <div class="asset-info">
+                                                <div class="asset-icon btc">
+                                                    <i class="fab fa-bitcoin"></i>
+                                                </div>
+                                                <div class="asset-details">
+                                                    <div class="asset-name">Bitcoin</div>
+                                                    <div class="asset-symbol">BTC</div>
+                                                </div>
+                                            </div>
+                                            <div class="suggestion-score high">
+                                                <i class="fas fa-fire"></i>
+                                                <span>85%</span>
+                                            </div>
+                                        </div>
+                                        <div class="suggestion-details">
+                                            <div class="detail">
+                                                <span class="label">Son 24s</span>
+                                                <span class="value positive">+3.2%</span>
+                                            </div>
+                                            <div class="detail">
+                                                <span class="label">Volatilite</span>
+                                                <span class="value">Yüksek</span>
+                                            </div>
+                                            <div class="detail">
+                                                <span class="label">Önerilen</span>
+                                                <span class="value">₺200</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm">
+                                            <i class="fas fa-chart-line"></i>
+                                            Detay
+                                        </button>
+                                    </div>
+
+                                    <div class="suggestion-item">
+                                        <div class="suggestion-header">
+                                            <div class="asset-info">
+                                                <div class="asset-icon gold">
+                                                    <i class="fas fa-coins"></i>
+                                                </div>
+                                                <div class="asset-details">
+                                                    <div class="asset-name">Altın</div>
+                                                    <div class="asset-symbol">GLD</div>
+                                                </div>
+                                            </div>
+                                            <div class="suggestion-score medium">
+                                                <i class="fas fa-chart-line"></i>
+                                                <span>65%</span>
+                                            </div>
+                                        </div>
+                                        <div class="suggestion-details">
+                                            <div class="detail">
+                                                <span class="label">Son 24s</span>
+                                                <span class="value positive">+1.1%</span>
+                                            </div>
+                                            <div class="detail">
+                                                <span class="label">Volatilite</span>
+                                                <span class="value">Düşük</span>
+                                            </div>
+                                            <div class="detail">
+                                                <span class="label">Önerilen</span>
+                                                <span class="value">₺150</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm">
+                                            <i class="fas fa-chart-line"></i>
+                                            Detay
+                                        </button>
+                                    </div>
+
+                                    <div class="suggestion-item">
+                                        <div class="suggestion-header">
+                                            <div class="asset-info">
+                                                <div class="asset-icon tech">
+                                                    <i class="fas fa-microchip"></i>
+                                                </div>
+                                                <div class="asset-details">
+                                                    <div class="asset-name">Teknoloji</div>
+                                                    <div class="asset-symbol">TECH</div>
+                                                </div>
+                                            </div>
+                                            <div class="suggestion-score high">
+                                                <i class="fas fa-rocket"></i>
+                                                <span>78%</span>
+                                            </div>
+                                        </div>
+                                        <div class="suggestion-details">
+                                            <div class="detail">
+                                                <span class="label">Son 24s</span>
+                                                <span class="value positive">+2.4%</span>
+                                            </div>
+                                            <div class="detail">
+                                                <span class="label">Volatilite</span>
+                                                <span class="value">Orta</span>
+                                            </div>
+                                            <div class="detail">
+                                                <span class="label">Önerilen</span>
+                                                <span class="value">₺180</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm">
+                                            <i class="fas fa-chart-line"></i>
+                                            Detay
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Transactions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Son İşlemler</h3>
+                                <a href="#" class="btn-link">Tümünü Gör</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="transactions-list">
+                                    <div class="transaction-item">
+                                        <div class="transaction-type buy">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </div>
+                                        <div class="transaction-details">
+                                            <div class="transaction-asset">BTC</div>
+                                            <div class="transaction-date">2 saat önce</div>
+                                        </div>
+                                        <div class="transaction-amount">
+                                            <div class="amount">₺500</div>
+                                            <div class="quantity">0.015 BTC</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="transaction-item">
+                                        <div class="transaction-type sell">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </div>
+                                        <div class="transaction-details">
+                                            <div class="transaction-asset">BIST</div>
+                                            <div class="transaction-date">1 gün önce</div>
+                                        </div>
+                                        <div class="transaction-amount">
+                                            <div class="amount">₺300</div>
+                                            <div class="quantity">15 lot</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="transaction-item">
+                                        <div class="transaction-type buy">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </div>
+                                        <div class="transaction-details">
+                                            <div class="transaction-asset">ALTIN</div>
+                                            <div class="transaction-date">3 gün önce</div>
+                                        </div>
+                                        <div class="transaction-amount">
+                                            <div class="amount">₺200</div>
+                                            <div class="quantity">3.5 gr</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Investments -->
+                <div class="investments-section">
+                    <div class="section-header">
+                        <h2>Mevcut Yatırımlarım</h2>
+                        <p>Aktif yatırım pozisyonlarınız</p>
+                    </div>
+                    <div class="investments-table-container">
+                        <table class="investments-table">
+                            <thead>
+                                <tr>
+                                    <th>Varlık</th>
+                                    <th>Miktar</th>
+                                    <th>Ort. Maliyet</th>
+                                    <th>Güncel Fiyat</th>
+                                    <th>Değer</th>
+                                    <th>Getiri</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="investmentsTableBody">
+                                <!-- Investments will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Risk Analysis -->
+                <div class="risk-analysis">
+                    <div class="section-header">
+                        <h2>Risk Analizi</h2>
+                        <p>Portföyünüzün risk dağılımı</p>
+                    </div>
+                    <div class="risk-cards">
+                        <div class="risk-card">
+                            <div class="risk-header">
+                                <h4>Risk Dağılımı</h4>
+                                <div class="risk-score medium">Orta Risk</div>
+                            </div>
+                            <div class="risk-progress">
+                                <div class="risk-bar">
+                                    <div class="risk-segment low" style="width: 30%">
+                                        <span>Düşük</span>
+                                        <span>30%</span>
+                                    </div>
+                                    <div class="risk-segment medium" style="width: 50%">
+                                        <span>Orta</span>
+                                        <span>50%</span>
+                                    </div>
+                                    <div class="risk-segment high" style="width: 20%">
+                                        <span>Yüksek</span>
+                                        <span>20%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-card">
+                            <div class="risk-header">
+                                <h4>Varlık Çeşitliliği</h4>
+                                <div class="risk-score good">İyi</div>
+                            </div>
+                            <div class="diversity-metrics">
+                                <div class="metric">
+                                    <span class="label">Sektör Sayısı</span>
+                                    <span class="value">5</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="label">Varlık Türü</span>
+                                    <span class="value">3</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="label">Korelasyon</span>
+                                    <span class="value">Düşük</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-card">
+                            <div class="risk-header">
+                                <h4>Öneriler</h4>
+                                <div class="risk-score excellent">Mükemmel</div>
+                            </div>
+                            <div class="recommendations">
+                                <div class="recommendation">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Portföy çeşitlendirmesi iyi</span>
+                                </div>
+                                <div class="recommendation">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Düşük riskli varlıkları artırın</span>
+                                </div>
+                                <div class="recommendation">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Teknoloji sektörüne odaklanın</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="dashboard.html" class="mobile-nav-link">
+                <i class="fas fa-chart-pie"></i>
+                Dashboard
+            </a>
+            <a href="goals.html" class="mobile-nav-link">
+                <i class="fas fa-bullseye"></i>
+                Hedefler
+            </a>
+            <a href="investments.html" class="mobile-nav-link active">
+                <i class="fas fa-chart-line"></i>
+                Yatırım
+            </a>
+            <a href="settings.html" class="mobile-nav-link">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+            <div class="mobile-user-section">
+                <div class="mobile-user-info">
+                    <div class="user-avatar">
+                        <img src="assets/icons/user-default.png" alt="Kullanıcı">
+                    </div>
+                    <div>
+                        <div class="user-name" id="mobileUserName">Kullanıcı</div>
+                        <div class="user-email" id="mobileUserEmail">user@example.com</div>
+                    </div>
+                </div>
+                <a href="#" onclick="SikkeApp.logout()" class="btn btn-outline btn-full">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Investment Modal -->
+    <div class="modal" id="investmentModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Yeni Yatırım Ekle</h3>
+                <button class="modal-close" id="closeInvestmentModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="investmentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Varlık Türü</label>
+                            <select id="investmentType" class="form-input" required>
+                                <option value="">Seçiniz</option>
+                                <option value="crypto">Kripto Para</option>
+                                <option value="stock">Hisse Senedi</option>
+                                <option value="etf">ETF</option>
+                                <option value="commodity">Emtia</option>
+                                <option value="forex">Forex</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sembol</label>
+                            <input type="text" id="investmentSymbol" class="form-input" placeholder="Örn: BTC, XU100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Varlık Adı</label>
+                        <input type="text" id="investmentName" class="form-input" placeholder="Örn: Bitcoin, BIST 100" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Miktar</label>
+                            <input type="number" id="investmentQuantity" class="form-input" placeholder="0.00" step="0.000001" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Alış Fiyatı</label>
+                            <input type="number" id="investmentPrice" class="form-input" placeholder="₺0.00" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Toplam Tutar</label>
+                        <input type="text" id="investmentTotal" class="form-input" placeholder="₺0.00" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">İşlem Tarihi</label>
+                        <input type="date" id="investmentDate" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Not (opsiyonel)</label>
+                        <textarea id="investmentNotes" class="form-input" rows="3" placeholder="Yatırım hakkında notlar..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelInvestment">İptal</button>
+                        <button type="submit" class="btn btn-primary">Yatırım Ekle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Investment Modal -->
+    <div class="modal" id="sellModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yatırım Sat</h3>
+                <button class="modal-close" id="closeSellModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="sellForm">
+                    <div class="sell-info">
+                        <div class="info-item">
+                            <label>Varlık:</label>
+                            <span id="sellAssetName">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Mevcut Miktar:</label>
+                            <span id="sellCurrentQuantity">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Ortalama Maliyet:</label>
+                            <span id="sellAvgCost">-</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Satış Miktarı</label>
+                        <input type="number" id="sellQuantity" class="form-input" placeholder="0.00" step="0.000001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Satış Fiyatı</label>
+                        <input type="number" id="sellPrice" class="form-input" placeholder="₺0.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Toplam Tutar</label>
+                        <input type="text" id="sellTotal" class="form-input" placeholder="₺0.00" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Satış Tarihi</label>
+                        <input type="date" id="sellDate" class="form-input" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelSell">İptal</button>
+                        <button type="submit" class="btn btn-primary">Satış Yap</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/investments.js"></script>
 </body>
 </html>

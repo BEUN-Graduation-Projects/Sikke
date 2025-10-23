@@ -1,348 +1,347 @@
-class AuthManager {
+// Auth specific functionality
+class AuthUI {
     constructor() {
-        this.api = window.apiService;
+        this.currentStep = 1;
+        this.totalSteps = 3;
         this.init();
     }
 
     init() {
         this.setupEventListeners();
-        this.checkExistingAuth();
+        this.setupPasswordToggle();
+        this.setupPasswordStrength();
+        this.setupFormSteps();
+        this.setupSocialButtons();
+        this.setupPageTransitions();
     }
 
     setupEventListeners() {
-        // Login form
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-        }
+        // Input animations
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', this.handleInputFocus);
+            input.addEventListener('blur', this.handleInputBlur);
+        });
+    }
 
-        // Register form
-        const registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-            registerForm.addEventListener('submit', (e) => this.handleRegister(e));
+    handleInputFocus(e) {
+        const parent = e.target.closest('.input-group');
+        parent.classList.add('focused');
+    }
 
-            // Password strength check
-            const passwordInput = document.getElementById('regPassword');
-            if (passwordInput) {
-                passwordInput.addEventListener('input', () => this.checkPasswordStrength());
-            }
-
-            // Password match check
-            const confirmInput = document.getElementById('confirmPassword');
-            if (confirmInput) {
-                confirmInput.addEventListener('input', () => this.checkPasswordMatch());
-            }
+    handleInputBlur(e) {
+        const parent = e.target.closest('.input-group');
+        if (!e.target.value) {
+            parent.classList.remove('focused');
         }
     }
 
-    checkExistingAuth() {
-        const token = localStorage.getItem('sikke_token');
-        if (token && (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html'))) {
-            window.location.href = 'index.html';
-        }
-    }
+    setupPasswordToggle() {
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const input = e.target.closest('.input-group').querySelector('input');
+                const icon = e.target.querySelector('i');
 
-    async handleLogin(e) {
-        e.preventDefault();
-
-        const formData = new FormData(e.target);
-        const data = {
-            email: formData.get('email'),
-            password: formData.get('password')
-        };
-
-        await this.submitAuthRequest('login', data, 'Giriş başarılı!');
-    }
-
-    async handleRegister(e) {
-        e.preventDefault();
-
-        const formData = new FormData(e.target);
-        const data = {
-            email: formData.get('email'),
-            password: formData.get('password'),
-            monthly_income: parseFloat(formData.get('monthly_income')) || 0,
-            fixed_expenses: parseFloat(formData.get('fixed_expenses')) || 0
-        };
-
-        // Password confirmation check
-        const password = formData.get('password');
-        const confirmPassword = formData.get('confirmPassword');
-
-        if (password !== confirmPassword) {
-            this.showToast('Şifreler eşleşmiyor!', 'error');
-            return;
-        }
-
-        if (password.length < 6) {
-            this.showToast('Şifre en az 6 karakter olmalıdır!', 'error');
-            return;
-        }
-
-        await this.submitAuthRequest('register', data, 'Hesap başarıyla oluşturuldu!');
-    }
-
-  async submitAuthRequest(type, data, successMessage) {
-        const submitBtn = document.getElementById('loginBtn') || document.getElementById('registerBtn');
-        this.setLoadingState(submitBtn, true);
-
-        try {
-            let result;
-
-            // Demo hesap için özel kontrol
-            if (data.email === 'demo@sikke.com' && data.password === 'demo123') {
-                result = await this.handleDemoAuth();
-            } else {
-                if (type === 'login') {
-                    result = await this.api.login(data.email, data.password);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
                 } else {
-                    result = await this.api.register(data);
+                    input.type = 'password';
+                    icon.className = 'fas fa-eye';
                 }
-            }
-
-            // Save token and user data
-            localStorage.setItem('sikke_token', result.token);
-            localStorage.setItem('sikke_user', JSON.stringify(result.user));
-
-            this.showToast(successMessage, 'success');
-
-            // Hemen yönlendir, setTimeout beklemeden
-            console.log('Giriş başarılı, yönlendiriliyor...');
-            window.location.href = 'index.html';
-
-        } catch (error) {
-            console.error('Auth error:', error);
-            this.showToast(error.message, 'error');
-        } finally {
-            this.setLoadingState(submitBtn, false);
-        }
+            });
+        });
     }
 
+    setupPasswordStrength() {
+        const passwordInput = document.getElementById('password');
+        if (!passwordInput) return;
 
-    async handleDemoAuth() {
-        // Demo kullanıcı için mock response
-        const demoUser = {
-            id: 1,
-            email: 'demo@sikke.com',
-            monthly_income: 15000,
-            fixed_expenses: 7500,
-            created_at: new Date().toISOString()
-        };
-
-        // Mock token oluştur
-        const demoToken = 'demo-token-' + Date.now();
-
-        return {
-            token: demoToken,
-            user: demoUser,
-            message: 'Demo girişi başarılı'
-        };
+        passwordInput.addEventListener('input', (e) => {
+            const password = e.target.value;
+            this.updatePasswordStrength(password);
+        });
     }
 
-    checkPasswordStrength() {
-        const password = document.getElementById('regPassword').value;
-        const strengthBar = document.getElementById('passwordStrength');
-        const strengthText = document.getElementById('passwordText');
-
-        if (!strengthBar || !strengthText) return;
-
-        if (!password) {
-            strengthBar.style.width = '0%';
-            strengthBar.style.backgroundColor = 'transparent';
-            strengthText.textContent = 'Şifre gücü: zayıf';
-            return;
-        }
+    updatePasswordStrength(password) {
+        const bars = document.querySelectorAll('.strength-bars .bar');
+        const text = document.querySelector('.strength-text span');
 
         let strength = 0;
-        let feedback = '';
+        let color = '#ef4444';
+        let message = 'zayıf';
 
         // Length check
-        if (password.length >= 6) strength += 25;
-        if (password.length >= 8) strength += 15;
+        if (password.length >= 8) strength += 25;
+        // Lowercase and uppercase check
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
+        // Numbers check
+        if (password.match(/\d/)) strength += 25;
+        // Special characters check
+        if (password.match(/[^a-zA-Z\d]/)) strength += 25;
 
-        // Character variety checks
-        if (/[a-z]/.test(password)) strength += 15;
-        if (/[A-Z]/.test(password)) strength += 15;
-        if (/[0-9]/.test(password)) strength += 15;
-        if (/[^a-zA-Z0-9]/.test(password)) strength += 15;
-
-        // Update UI
-        strengthBar.style.width = `${Math.min(strength, 100)}%`;
-
-        if (strength < 40) {
-            strengthBar.style.backgroundColor = '#f56565';
-            feedback = 'zayıf';
-        } else if (strength < 70) {
-            strengthBar.style.backgroundColor = '#ed8936';
-            feedback = 'orta';
-        } else {
-            strengthBar.style.backgroundColor = '#48bb78';
-            feedback = 'güçlü';
+        if (strength >= 75) {
+            color = '#10b981';
+            message = 'güçlü';
+        } else if (strength >= 50) {
+            color = '#f59e0b';
+            message = 'orta';
         }
 
-        strengthText.textContent = `Şifre gücü: ${feedback}`;
+        // Update bars
+        bars.forEach((bar, index) => {
+            const barStrength = (index + 1) * 25;
+            if (strength >= barStrength) {
+                bar.style.background = color;
+            } else {
+                bar.style.background = 'var(--bg-tertiary)';
+            }
+        });
+
+        // Update text
+        if (text) {
+            text.textContent = message;
+            text.style.color = color;
+        }
     }
 
-    checkPasswordMatch() {
-        const password = document.getElementById('regPassword');
-        const confirmPassword = document.getElementById('confirmPassword');
-        const matchHint = document.getElementById('passwordMatch');
+    setupFormSteps() {
+        const nextBtn = document.querySelector('.btn-next');
+        const prevBtn = document.querySelector('.btn-prev');
+        const submitBtn = document.querySelector('.btn-submit');
 
-        if (!password || !confirmPassword || !matchHint) return;
+        if (!nextBtn) return;
 
-        const passwordValue = password.value;
-        const confirmValue = confirmPassword.value;
+        nextBtn.addEventListener('click', () => this.nextStep());
+        if (prevBtn) prevBtn.addEventListener('click', () => this.prevStep());
+        if (submitBtn) submitBtn.addEventListener('click', (e) => this.handleSubmit(e));
+    }
 
-        if (!confirmValue) {
-            matchHint.textContent = '';
+    nextStep() {
+        if (this.currentStep >= this.totalSteps) return;
+
+        // Validate current step
+        if (!this.validateStep(this.currentStep)) {
             return;
         }
 
-        if (passwordValue === confirmValue) {
-            matchHint.textContent = 'Şifreler eşleşiyor ✓';
-            matchHint.style.color = 'var(--primary-green)';
-        } else {
-            matchHint.textContent = 'Şifreler eşleşmiyor ✗';
-            matchHint.style.color = 'var(--text-danger)';
+        this.currentStep++;
+        this.updateStepUI();
+    }
+
+    prevStep() {
+        if (this.currentStep <= 1) return;
+
+        this.currentStep--;
+        this.updateStepUI();
+    }
+
+    validateStep(step) {
+        switch (step) {
+            case 1:
+                return this.validatePersonalInfo();
+            case 2:
+                return this.validateGoals();
+            case 3:
+                return this.validatePreferences();
+            default:
+                return true;
         }
     }
 
-    setLoadingState(button, isLoading) {
-        if (!button) return;
+    validatePersonalInfo() {
+        const required = ['fullName', 'email', 'password', 'confirmPassword'];
+        let isValid = true;
 
-        if (isLoading) {
-            button.classList.add('loading');
-            button.disabled = true;
-        } else {
-            button.classList.remove('loading');
-            button.disabled = false;
+        required.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input || !input.value.trim()) {
+                this.showFieldError(input, 'Bu alan zorunludur');
+                isValid = false;
+            } else {
+                this.clearFieldError(input);
+            }
+        });
+
+        // Email validation
+        const email = document.getElementById('email');
+        if (email && email.value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                this.showFieldError(email, 'Geçerli bir e-posta adresi girin');
+                isValid = false;
+            }
+        }
+
+        // Password match validation
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        if (password && confirmPassword && password.value !== confirmPassword.value) {
+            this.showFieldError(confirmPassword, 'Şifreler eşleşmiyor');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    validateGoals() {
+        const goalSelected = document.querySelector('input[name="goal"]:checked');
+        if (!goalSelected) {
+            Utils.showNotification('Lütfen bir finansal hedef seçin', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+    validatePreferences() {
+        const termsAccepted = document.getElementById('terms');
+        if (!termsAccepted || !termsAccepted.checked) {
+            Utils.showNotification('Kullanım koşullarını kabul etmelisiniz', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+    showFieldError(input, message) {
+        const parent = input.closest('.input-group');
+        parent.classList.add('error');
+
+        // Remove existing error message
+        const existingError = parent.querySelector('.error-message');
+        if (existingError) existingError.remove();
+
+        // Add error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        errorDiv.style.cssText = `
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        `;
+        parent.appendChild(errorDiv);
+    }
+
+    clearFieldError(input) {
+        const parent = input.closest('.input-group');
+        parent.classList.remove('error');
+        const errorMessage = parent.querySelector('.error-message');
+        if (errorMessage) errorMessage.remove();
+    }
+
+    updateStepUI() {
+        // Update steps
+        document.querySelectorAll('.step').forEach((step, index) => {
+            if (index + 1 === this.currentStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+
+        // Update form steps
+        document.querySelectorAll('.form-step').forEach((step, index) => {
+            if (index + 1 === this.currentStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+
+        // Update navigation buttons
+        const prevBtn = document.querySelector('.btn-prev');
+        const nextBtn = document.querySelector('.btn-next');
+        const submitBtn = document.querySelector('.btn-submit');
+
+        if (prevBtn) {
+            prevBtn.style.display = this.currentStep > 1 ? 'flex' : 'none';
+        }
+
+        if (nextBtn && submitBtn) {
+            if (this.currentStep === this.totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
         }
     }
 
-    showToast(message, type = 'info') {
-        let toast = document.getElementById('toast');
+    setupSocialButtons() {
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const provider = btn.classList[1]; // google, microsoft, apple
+                this.handleSocialLogin(provider);
+            });
+        });
+    }
 
-        // Toast yoksa oluştur
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast';
-            toast.className = 'toast hidden';
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="toast-icon"></i>
-                    <span class="toast-message"></span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-        }
+    handleSocialLogin(provider) {
+        Utils.showNotification(`${provider.charAt(0).toUpperCase() + provider.slice(1)} ile giriş yakında eklenecek`, 'info');
 
-        const toastIcon = toast.querySelector('.toast-icon');
-        const toastMessage = toast.querySelector('.toast-message');
+        // Simulate loading
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Yönlendiriliyor...</span>';
+        btn.disabled = true;
 
-        // Set icon based on type
-        let iconClass = 'fas fa-info-circle';
-        if (type === 'success') iconClass = 'fas fa-check-circle';
-        if (type === 'error') iconClass = 'fas fa-exclamation-circle';
-
-        toastIcon.className = `toast-icon ${iconClass}`;
-        toastMessage.textContent = message;
-
-        // Update toast class
-        toast.className = `toast ${type}`;
-        toast.style.display = 'block';
-
-        // Show with animation
         setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }, 2000);
+    }
 
-        // Auto hide after 5 seconds
-        setTimeout(() => {
-            toast.classList.remove('show');
+    setupPageTransitions() {
+        // Page load transition
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                toast.style.display = 'none';
-            }, 300);
-        }, 5000);
+                document.querySelector('.page-transition').classList.remove('active');
+            }, 1000);
+        });
+
+        // Form submission transition
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const loader = submitBtn.querySelector('.btn-loader');
+                    const text = submitBtn.querySelector('#loginText, #signupText');
+
+                    if (loader && text) {
+                        text.style.opacity = '0';
+                        loader.style.display = 'block';
+                    }
+                }
+            });
+        });
     }
 
-    // Demo login for testing
-    async demoLogin() {
-        const demoData = {
-            email: 'demo@sikke.com',
-            password: 'demo123'
+    async handleSubmit(e) {
+        e.preventDefault();
+
+        if (!this.validateStep(this.currentStep)) {
+            return;
+        }
+
+        const formData = {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            goal: document.querySelector('input[name="goal"]:checked')?.value,
+            newsletter: document.getElementById('newsletter')?.checked,
+            analytics: document.getElementById('analytics')?.checked
         };
 
-        // Demo butonunu bul ve loading state'e al
-        const demoBtn = document.querySelector('[onclick*="demoLogin"]');
-        if (demoBtn) {
-            const originalText = demoBtn.innerHTML;
-            demoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Giriş yapılıyor...';
-            demoBtn.disabled = true;
-
-            try {
-                await this.submitAuthRequest('login', demoData, 'Demo hesabına giriş yapıldı!');
-            } finally {
-                demoBtn.innerHTML = originalText;
-                demoBtn.disabled = false;
-            }
-        } else {
-            await this.submitAuthRequest('login', demoData, 'Demo hesabına giriş yapıldı!');
+        try {
+            await SikkeApp.register(formData);
+        } catch (error) {
+            // Error handling is done in the main.js
         }
     }
 }
 
-// Initialize auth manager
+// Initialize auth UI when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Önce API service'i kontrol et
-    if (typeof window.apiService === 'undefined') {
-        // Basit bir API service oluştur
-        window.apiService = {
-            async login(email, password) {
-                // Backend henüz hazır değilse demo response dön
-                if (email === 'demo@sikke.com' && password === 'demo123') {
-                    return {
-                        token: 'demo-token-' + Date.now(),
-                        user: {
-                            id: 1,
-                            email: 'demo@sikke.com',
-                            monthly_income: 15000,
-                            fixed_expenses: 7500,
-                            created_at: new Date().toISOString()
-                        }
-                    };
-                }
-                throw new Error('Geçersiz email veya şifre');
-            },
-
-            async register(userData) {
-                // Basit kayıt işlemi
-                return {
-                    token: 'demo-token-' + Date.now(),
-                    user: {
-                        id: Date.now(),
-                        email: userData.email,
-                        monthly_income: userData.monthly_income,
-                        fixed_expenses: userData.fixed_expenses,
-                        created_at: new Date().toISOString()
-                    }
-                };
-            }
-        };
-    }
-
-    window.authManager = new AuthManager();
-
-    // Add demo login shortcut (for development)
-    if (window.location.pathname.includes('login.html') || window.location.pathname.endsWith('/')) {
-        const authFooter = document.querySelector('.auth-footer');
-        if (authFooter && !document.querySelector('.demo-login-btn')) {
-            const demoLoginBtn = document.createElement('button');
-            demoLoginBtn.textContent = 'Demo Giriş';
-            demoLoginBtn.className = 'btn btn-secondary btn-sm demo-login-btn';
-            demoLoginBtn.style.marginTop = '16px';
-            demoLoginBtn.onclick = () => window.authManager.demoLogin();
-
-            authFooter.appendChild(demoLoginBtn);
-        }
-    }
+    window.AuthUI = new AuthUI();
 });
